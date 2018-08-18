@@ -28,7 +28,7 @@ export function loginUser() {
         return browserHistory.push(decodeURIComponent(currentLocation.query.redirect))
       }
 
-      return browserHistory.push('/dashboard')
+      return browserHistory.push('/marketplace')
     })
   }
 }
