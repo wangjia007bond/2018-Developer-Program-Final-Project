@@ -10,6 +10,8 @@ class Goods extends Component {
   handleAdopt(event) {
     event.preventDefault();
 
+    console.log("Hello Duck!");
+
     var petId = this.props.id;
 
     var adoptionInstance;
@@ -59,7 +61,7 @@ class Goods extends Component {
                 className="btn btn-default btn-adopt"
                 type="button"
                 data-id="0"
-                onClick={this.clickAdoption}
+                onClick={this.handleAdopt}
                 disabled={this.props.adopted}
               >
                 Adopt

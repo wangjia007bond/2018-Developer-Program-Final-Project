@@ -6,7 +6,7 @@ class MarketPlace extends Component {
   constructor(props, { authData }) {
     super(props)
     authData = this.props;
-    this.setState({goods: goods});
+    this.state = {};
   }
 
   componentDidMount() {
@@ -15,6 +15,7 @@ class MarketPlace extends Component {
   }
 
   adoptedOnePet(petId) {
+      console.log("Hello World!");
       let goods = this.state.goods.map(goods => {
           if(goods.id == petId) {
             goods.adopted = true;
@@ -26,7 +27,7 @@ class MarketPlace extends Component {
 
   render() {
 
-    const goodsView = this.state.goods.map(goods => {
+    const goodsView = goods.map(goods => {
     return (
         <Goods 
             key={goods.id} 
@@ -36,7 +37,7 @@ class MarketPlace extends Component {
             location={goods.location} 
             adaptedOnePet={this.adoptedOnePet}
             adopted={goods.adopted}
-                />
+            />
         );
     });
     return(
