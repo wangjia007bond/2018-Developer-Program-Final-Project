@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import Goods from "../../goods/Goods.js";
+import goods from "../../pets.json";
 
 class MarketPlace extends Component {
   constructor(props, { authData }) {
@@ -7,15 +9,14 @@ class MarketPlace extends Component {
   }
 
   render() {
+
+    const goodsView = goods.map(goods => {
+        return <Goods key={goods.id} name={goods.name} age={goods.age} breed={goods.breed} location={goods.location} />;
+    })
     return(
-      <main className="container">
-        <div className="pure-g">
-          <div className="pure-u-1-1">
-            <h1>MarketPlace</h1>
-            <p><strong>Congratulations {this.props.authData.name}!</strong> If you're seeing this page, you've logged in with UPort successfully.</p>
-          </div>
+        <div id="petsRow" className="row">
+            {goodsView}
         </div>
-      </main>
     )
   }
 }
