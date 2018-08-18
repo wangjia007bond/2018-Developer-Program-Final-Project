@@ -3,8 +3,36 @@ import React, { Component } from 'react';
 class Goods extends Component {
   constructor(props, { authData }) {
     super(props)
-    authData = this.props
+    authData = this.props;
+    this.handleAdopt = this.handleAdopt.bind(this);
   }
+
+  handleAdopt(event) {
+    event.preventDefault();
+
+    var petId = this.props.id;
+
+    var adoptionInstance;
+
+    // web3.eth.getAccounts(function(error, accounts) {
+    //   if (error) {
+    //     console.log(error);
+    //   }
+    
+    //   var account = accounts[0];
+    
+    //   App.contracts.Adoption.deployed().then(function(instance) {
+    //     adoptionInstance = instance;
+    
+    //     // Execute adopt as a transaction by sending account
+    //     return adoptionInstance.adopt(petId, {from: account});
+    //   }).then(function(result) {
+    //     this.props.adoptedOnePet(this.props.id);
+    //   }).catch(function(err) {
+    //     console.log(err.message);
+    //   });
+    // });
+  }  
 
   render() {
     return(
@@ -31,6 +59,8 @@ class Goods extends Component {
                 className="btn btn-default btn-adopt"
                 type="button"
                 data-id="0"
+                onClick={this.clickAdoption}
+                disabled={this.props.adopted}
               >
                 Adopt
               </button>
