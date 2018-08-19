@@ -3,19 +3,15 @@ import AdoptionContract from '../../build/contracts/Adoption.json'
 import getWeb3 from '../util/getWeb3'
 
 class Goods extends Component {
-  constructor(props, { authData }) {
+  constructor(props) {
     super(props)
-    authData = this.props;
-    this.handleAdopt = this.handleAdopt.bind(this);
-    this.web3 = null;
+    this.handleAdopt = this.handleAdopt.bind(this)
+    this.web3 = null
   }
 
   componentWillMount() {
     // Get network provider and web3 instance.
     // See utils/getWeb3 for more info.
-
-    console.log("AdoptionContract" + AdoptionContract);
-    console.log("getWeb3:" + getWeb3);
 
     getWeb3
     .then(results => {
@@ -65,11 +61,12 @@ class Goods extends Component {
   } 
 
   handleAdopt(event) {
-    event.preventDefault();
+    event.preventDefault()
 
-    console.log("Hello Duck!");
+    console.log("this.props.id!" + this.props.id)
 
     var petId = this.props.id;
+    console.log("Hello Duck!" + petId);
     /*
      * SMART CONTRACT EXAMPLE
      *
