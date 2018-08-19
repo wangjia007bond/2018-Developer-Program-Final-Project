@@ -17,7 +17,7 @@ class MarketPlace extends Component {
   adoptedOnePet(petId) {
       console.log("Hello World!");
       let goods = this.state.goods.map(goods => {
-          if(goods.id == petId) {
+          if(goods.id === petId) {
             goods.adopted = true;
           }
           return goods;
