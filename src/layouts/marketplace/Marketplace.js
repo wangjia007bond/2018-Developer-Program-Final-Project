@@ -13,11 +13,9 @@ class Marketplace extends Component {
 
   componentDidMount() {
     this.setState({goodsList: goodsListData})
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
+    // Get network provider and web3 instance. See utils/getWeb3 for more info.
 
-    getWeb3
-    .then(results => {
+    getWeb3.then(results => {
       this.setState({
         web3: results.web3
       })
@@ -44,10 +42,11 @@ class Marketplace extends Component {
 
     // Declaring this for later so we can chain functions on Adoption.
     var adoptionInstance
+    var newGoodList = this.state.goodsList
 
     // Get accounts.
     this.state.web3.eth.getAccounts((error, accounts) => {
-      var account = accounts[0];
+
       adoption.deployed().then((instance) => {
         adoptionInstance = instance
 
@@ -57,14 +56,14 @@ class Marketplace extends Component {
         // Get the value from the contract to prove it worked.
         for (var i = 0; i < adopters.length; i++) {
             if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-                this.state.goodsList[i].adopted = true;
+              newGoodList[i].adopted = true
             } else {
-                this.state.goodsList[i].adopted = false;
+              newGoodList[i].adopted = false
             }
         }
       }).then((result) => {
         // Update state with the result.
-        //return this.setState({ storageValue: result.c[0] })
+        return this.setState({goodsList: newGoodList})
       })
     })  
   }

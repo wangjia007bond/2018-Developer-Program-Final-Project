@@ -6,59 +6,30 @@ class Goods extends Component {
   constructor(props) {
     super(props)
     this.handleAdopt = this.handleAdopt.bind(this)
+    this.handleText = this.handleText.bind(this)
     this.web3 = null
   }
 
   componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
+    // Get network provider and web3 instance. See utils/getWeb3 for more info.
 
-    getWeb3
-    .then(results => {
+    getWeb3.then(results => {
       this.setState({
         web3: results.web3
       })
-
-      // Instantiate contract once web3 provided.
-      this.instantiateContract()
     })
     .catch(() => {
       console.log('Error finding web3.')
     })
   }
 
-  instantiateContract() {
-    /*
-     * SMART CONTRACT EXAMPLE
-     *
-     * Normally these functions would be called in the context of a
-     * state management library, but for convenience I've placed them here.
-     */
-
-    const contract = require('truffle-contract')
-    const adoption = contract(AdoptionContract)
-    adoption.setProvider(this.state.web3.currentProvider)
-
-    // Declaring this for later so we can chain functions on Adoption.
-    var adoptionInstance
-
-    // Get accounts.
-    this.state.web3.eth.getAccounts((error, accounts) => {
-      var account = accounts[0];
-      adoption.deployed().then((instance) => {
-        adoptionInstance = instance
-
-        // Stores a given value, 5 by default.
-        return adoptionInstance.set(5, {from: account})
-      }).then((result) => {
-        // Get the value from the contract to prove it worked.
-        return adoptionInstance.get.call(account)
-      }).then((result) => {
-        // Update state with the result.
-        //return this.setState({ storageValue: result.c[0] })
-      })
-    })
-  } 
+  handleText() {
+    if(this.props.adopted) {
+      return 'Success'
+    } else {
+      return 'Adopt'
+    }
+  }
 
   handleAdopt(event) {
     event.preventDefault()
@@ -130,7 +101,7 @@ class Goods extends Component {
                 onClick={this.handleAdopt}
                 disabled={this.props.adopted}
               >
-                Adopt
+                {this.props.adopted}
               </button>
             </div>
           </div>
