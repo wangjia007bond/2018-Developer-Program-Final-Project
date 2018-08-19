@@ -6,7 +6,6 @@ class Goods extends Component {
   constructor(props) {
     super(props)
     this.handleAdopt = this.handleAdopt.bind(this)
-    this.handleText = this.handleText.bind(this)
     this.web3 = null
   }
 
@@ -21,14 +20,6 @@ class Goods extends Component {
     .catch(() => {
       console.log('Error finding web3.')
     })
-  }
-
-  handleText() {
-    if(this.props.adopted) {
-      return 'Success'
-    } else {
-      return 'Adopt'
-    }
   }
 
   handleAdopt(event) {
@@ -101,7 +92,7 @@ class Goods extends Component {
                 onClick={this.handleAdopt}
                 disabled={this.props.adopted}
               >
-                {this.props.adopted}
+                {this.props.buttonText}
               </button>
             </div>
           </div>

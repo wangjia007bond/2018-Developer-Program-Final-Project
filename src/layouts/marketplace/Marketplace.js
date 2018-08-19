@@ -57,8 +57,10 @@ class Marketplace extends Component {
         for (var i = 0; i < adopters.length; i++) {
             if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
               newGoodList[i].adopted = true
+              newGoodList[i].buttonText = 'Success'
             } else {
               newGoodList[i].adopted = false
+              newGoodList[i].buttonText = 'Adopt'
             }
         }
       }).then((result) => {
@@ -73,6 +75,7 @@ class Marketplace extends Component {
       let newGoodsList = this.state.goodsList.map(goods => {
           if(goods.id === petId) {
             goods.adopted = true;
+            goods.buttonText = 'Success'
           }
           return goods;
       });
@@ -82,7 +85,7 @@ class Marketplace extends Component {
   render() {
 
     const goodsView = this.state.goodsList.map(goods => {
-    return (
+      return (
         <Goods 
             key={goods.id} 
             id={goods.id}
@@ -92,8 +95,9 @@ class Marketplace extends Component {
             location={goods.location} 
             adaptedOnePet={this.adoptedOnePet}
             adopted={goods.adopted}
-            />
-        );
+            buttonText={goods.buttonText}
+        />
+      );
     });
     return(
         <div id="petsRow" className="row">
