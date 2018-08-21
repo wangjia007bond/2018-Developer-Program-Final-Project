@@ -25,7 +25,7 @@ contract Marketplace {
     // Add a variable called goodsCount to track the most recent goods
     uint public goodsCount;
     // Add a line that creates a public mapping that maps the id to an Goods.
-    mapping (uint => Goods) goods;
+    mapping(uint => Goods) goods;
 
     // Create 7 events with the same name as each possible State
     event LogForSale(uint id, uint price);
@@ -38,11 +38,20 @@ contract Marketplace {
     event LogFetch(uint id, string name, uint price, string ipfspic, uint status, address seller, address buyer);
 
     // Create a modifer that checks if the msg.sender is the owner of the contract
-    modifier ownerOnly () { require (msg.sender == owner); _;}
+    modifier ownerOnly() { 
+        require (msg.sender == owner); 
+        _;
+    }
 
-    modifier verifyCaller (address _address) { require (msg.sender == _address); _;}
+    modifier verifyCaller(address _address) { 
+        require (msg.sender == _address); 
+        _;
+    }
 
-    modifier paidEnough(uint _price) { require(msg.value >= _price); _;}
+    modifier paidEnough(uint _price) { 
+        require(msg.value >= _price); 
+        _;
+    }
     
     modifier checkValue(uint _id) {
         //refund after pay for goods
@@ -55,13 +64,34 @@ contract Marketplace {
     /* For each of the following modifiers, use what you learned about modifiers
    to give them functionality. For example, the forSale modifier should require
    that the item with the given id has the status ForSale. */
-   modifier forSale (uint id) { require(goods[id].status == Status.ForSale); _; }
-   modifier sold (uint id) { require(goods[id].status == Status.Sold); _; }
-   modifier shipped (uint id) { require(goods[id].status == Status.Shipped); _; }
-   modifier received (uint id) { require(goods[id].status == Status.Received); _; }
-   modifier returned (uint id) { require(goods[id].status == Status.Return); _; }
-   modifier rshipped (uint id) { require(goods[id].status == Status.RShipped); _; }
-   modifier rreceived (uint id) { require(goods[id].status == Status.RReceived); _; }
+    modifier forSale(uint id) { 
+        require(goods[id].status == Status.ForSale); 
+        _; 
+    }
+    modifier sold(uint id) { 
+        require(goods[id].status == Status.Sold); 
+        _;
+    }
+    modifier shipped(uint id) { 
+        require(goods[id].status == Status.Shipped); 
+        _; 
+    }
+    modifier received(uint id) { 
+        require(goods[id].status == Status.Received); 
+        _; 
+    }
+    modifier returned(uint id) { 
+        require(goods[id].status == Status.Return); 
+        _;
+    }
+    modifier rshipped(uint id) { 
+        require(goods[id].status == Status.RShipped); 
+        _;
+    }
+    modifier rreceived(uint id) {
+        require(goods[id].status == Status.RReceived); 
+        _;
+    }
 
     // Constructor, can receive one or many variables here; only one allowed
     constructor() public {
@@ -109,6 +139,7 @@ contract Marketplace {
         verifyCaller(goods[id].buyer)
     {
         goods[id].status = Status.Received;
+        owner.balance = owner.balance - goods[id].price;
         goods[id].seller.transfer(goods[id].price);
         emit LogReceived(id, goods[id].price, goods[id].buyer);
     }

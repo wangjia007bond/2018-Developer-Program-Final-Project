@@ -69,9 +69,59 @@ contract('Marketplace', function(accounts){
 
         assert.equal(result[4].toString(10), 1, 'the state of the item should be "Sold", which should be declared second in the State Enum')
         assert.equal(result[6], bob, 'the buyer address should be set bob when he purchases an item')
-        assert.equal(eventEmitted, true, 'adding an item should emit a Sold event')
+        assert.equal(eventEmitted, true, 'selling an item should emit a Sold event')
         assert.equal(ownerBalanceAfter, ownerBalanceBefore + parseInt(price, 10), "owner's balance should be increased by the price of the item")
         assert.isBelow(bobBalanceAfter, bobBalanceBefore - price, "bob's balance should be reduced by more than the price of the item (including gas costs)")
+    })
+
+    it("should allow the seller to mark the goods as shipped", async() => {
+        const marketplace = await Marketplace.deployed()
+
+        var eventEmitted = false
+
+        var event = marketplace.LogShipped()
+        await event.watch((err, res) => {
+            id = res.args.id.toString(10)
+            eventEmitted = true
+        })
+
+        await marketplace.shipGoods(id, {from: alice})
+
+        const result = await marketplace.fetchGoods.call(id)
+
+        assert.equal(eventEmitted, true, 'Shipping an item should emit a Shipped event')
+        assert.equal(result[4].toString(10), 2, 'the state of the item should be "Shipped", which should be declared third in the State Enum')
+    })
+
+    it("should allow the buyer to mark the goods as received", async() => {
+        const marketplace = await Marketplace.deployed()
+
+        var eventEmitted = false
+
+        var event = marketplace.LogReceived()
+        await event.watch((err, res) => {
+            id = res.args.id.toString(10)
+            eventEmitted = true
+        })
+
+        var ownerBalanceBefore = await web3.eth.getBalance(owner).toNumber()
+        var aliceBalanceBefore = await web3.eth.getBalance(alice).toNumber()
+        console.log('smart contract balance before:' + ownerBalanceBefore)
+        console.log('alice balance before:' + aliceBalanceBefore)
+
+        await marketplace.receiveGoods(id, {from: bob})
+
+        var ownerBalanceAfter = await web3.eth.getBalance(owner).toNumber()
+        var aliceBalanceAfter = await web3.eth.getBalance(alice).toNumber()
+        console.log('smart contract balance after:' + ownerBalanceAfter)
+        console.log('alice balance after:' + aliceBalanceAfter)
+
+        const result = await marketplace.fetchGoods.call(id)
+
+        assert.equal(eventEmitted, true, 'receiving an item should emit a Shipped event')
+        assert.equal(result[4].toString(10), 3, 'the state of the item should be "Received", which should be declared fourth in the State Enum')
+        assert.equal(ownerBalanceAfter, ownerBalanceBefore - parseInt(price, 10), "owner's balance should be increased by the price of the item")
+        assert.equal(aliceBalanceAfter, aliceBalanceBefore + price, "bob's balance should be reduced by more than the price of the item (including gas costs)")
     })
     // Test for failing conditions in this contracts
     // test that every modifier is working
