@@ -45,7 +45,7 @@ contract Marketplace {
     modifier paidEnough(uint _price) { require(msg.value >= _price); _;}
     
     modifier checkValue(uint _id) {
-        //refund them after pay for item (why it is before, _ checks for logic before func)
+        //refund after pay for goods
         _;
         uint _price = goods[_id].price;
         uint amountToRefund = msg.value - _price;
@@ -84,9 +84,11 @@ contract Marketplace {
         payable
         forSale(id)
         paidEnough(goods[id].price)
+        checkValue(id)
     {
         goods[id].buyer = msg.sender;
         goods[id].status = Status.Sold;
+        owner.transfer(goods[id].price);
         emit LogSold(id, goods[id].price, goods[id].buyer);
     }
 
