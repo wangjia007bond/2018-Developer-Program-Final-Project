@@ -20,7 +20,16 @@ contract TestMarketplace {
     // Test for failing conditions in this contracts
     // test that every modifier is working
 
-    // buyItem
+    // add Goods
+    function testAddGoods() public {
+        uint expectedCount = 1;
+
+        marketplace.addGoods("Apple", 10, "0x88888888");
+        
+        Assert.equal(marketplace.goodsCount(), expectedCount, "Goods should added successfully, and the length should be 1.");
+    }
+
+    // buy Goods
 
     // test for failure if user does not send enough funds
     // test for purchasing an item that is not for Sale

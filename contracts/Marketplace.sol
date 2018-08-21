@@ -15,26 +15,27 @@ contract Marketplace {
     struct Goods {
         uint id;
         string name;
-        string ipfspic;
         uint price;
+        string ipfspic;
         Status status;
         address seller;
         address buyer;
     }
 
     // Add a variable called goodsCount to track the most recent goods
-    uint goodsCount;
+    uint public goodsCount;
     // Add a line that creates a public mapping that maps the id to an Goods.
     mapping (uint => Goods) goods;
 
     // Create 7 events with the same name as each possible State
-    event ForSale(uint goodsId, uint price);
-    event Sold(uint goodsId, uint price, address buyer);
-    event Shipped(uint goodsId, uint price, address seller);
-    event Received(uint goodsId, uint price, address buyer);
-    event Return(uint goodsId, uint price, address buyer);
-    event RShipped(uint goodsId, uint price, address buyer);
-    event RReceived(uint goodsId, uint price, address seller);
+    event LogForSale(uint id, uint price);
+    event LogSold(uint id, uint price, address buyer);
+    event LogShipped(uint id, uint price, address seller);
+    event LogReceived(uint id, uint price, address buyer);
+    event LogReturn(uint id, uint price, address buyer);
+    event LogRShipped(uint id, uint price, address buyer);
+    event LogRReceived(uint id, uint price, address seller);
+    event LogFetch(uint id, string name, uint price, string ipfspic, uint status, address seller, address buyer);
 
     // Create a modifer that checks if the msg.sender is the owner of the contract
     modifier ownerOnly () { require (msg.sender == owner); _;}
@@ -72,9 +73,9 @@ contract Marketplace {
 
     function addGoods(string _name, uint _price, string _ipfspic) public {
         uint _id = goodsCount;
-        goods[goodsCount] = Goods({id:_id, name:_name, ipfspic:_ipfspic, price:_price, status:Status.ForSale, seller:msg.sender, buyer:0});
+        goods[goodsCount] = Goods({id:_id, name:_name, price:_price, ipfspic:_ipfspic, status:Status.ForSale, seller:msg.sender, buyer:0});
         goodsCount += 1;
-        emit ForSale(_id, goods[_id].price);
+        emit LogForSale(_id, goods[_id].price);
     }
 
     // buy a goods
@@ -86,7 +87,7 @@ contract Marketplace {
     {
         goods[id].buyer = msg.sender;
         goods[id].status = Status.Sold;
-        emit Sold(id, goods[id].price, goods[id].buyer);
+        emit LogSold(id, goods[id].price, goods[id].buyer);
     }
 
     // ship a goods
@@ -96,7 +97,7 @@ contract Marketplace {
         verifyCaller(goods[id].seller)
     {
         goods[id].status = Status.Shipped;
-        emit Shipped(id, goods[id].price, goods[id].seller);
+        emit LogShipped(id, goods[id].price, goods[id].seller);
     }
 
     // received a goods
@@ -107,7 +108,7 @@ contract Marketplace {
     {
         goods[id].status = Status.Received;
         goods[id].seller.transfer(goods[id].price);
-        emit Received(id, goods[id].price, goods[id].buyer);
+        emit LogReceived(id, goods[id].price, goods[id].buyer);
     }
 
     function returnedGoods(uint id)
@@ -116,7 +117,7 @@ contract Marketplace {
         received(id)
     {
         goods[id].status = Status.Return;
-        emit Return(id, goods[id].price, goods[id].buyer);
+        emit LogReturn(id, goods[id].price, goods[id].buyer);
     }
 
     function returnShipGoods(uint id) 
@@ -125,7 +126,7 @@ contract Marketplace {
         verifyCaller(goods[id].seller)
     {
         goods[id].status = Status.RShipped;
-        emit RShipped(id, goods[id].price, goods[id].buyer);
+        emit LogRShipped(id, goods[id].price, goods[id].buyer);
     }
 
     function returnReceiveGoods(uint id) 
@@ -135,7 +136,7 @@ contract Marketplace {
     {
         goods[id].status = Status.RReceived;
         goods[id].buyer.transfer(goods[id].price);
-        emit RReceived(id, goods[id].price, goods[id].seller);
+        emit LogRReceived(id, goods[id].price, goods[id].seller);
     }
 
     function relistGoods(uint id)
@@ -144,22 +145,24 @@ contract Marketplace {
         verifyCaller(goods[id].seller) 
     {
         goods[id].status = Status.ForSale;
-        emit ForSale(id, goods[id].price);
+        emit LogForSale(id, goods[id].price);
     }
 
     function fetchGoods(uint _id) 
     public 
     view 
-    returns (uint id, string name, string ipfspic, uint price, uint state, address seller, address buyer) 
+    returns (uint id, string name, uint price, string ipfspic, uint state, address seller, address buyer) 
     {
         id = goods[_id].id; 
         name = goods[_id].name;
-        ipfspic = goods[_id].ipfspic;
         price = goods[_id].price;
+        ipfspic = goods[_id].ipfspic;
         state = uint(goods[_id].status);
         seller = goods[_id].seller;
         buyer = goods[_id].buyer;
-        return (id, name, ipfspic, price, state, seller, buyer);
+        
+        emit LogFetch(id, name, price, ipfspic, state, seller, buyer);
+        return (id, name, price, ipfspic, state, seller, buyer);
     }
 
     // Adopting a pet
