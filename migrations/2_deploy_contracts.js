@@ -1,7 +1,5 @@
-var Adoption = artifacts.require("Adoption");
-var SimpleBank = artifacts.require("SimpleBank");
+var Marketplace = artifacts.require("Marketplace");
 
 module.exports = function(deployer) {
-    deployer.deploy(Adoption);
-    deployer.deploy(SimpleBank);
+    deployer.deploy(Marketplace);
 }

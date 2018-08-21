@@ -1,7 +1,6 @@
 pragma solidity ^0.4.17;
-pragma experimental ABIEncoderV2;
 
-contract Adoption {
+contract Marketplace {
 
     address[16] public adopters;
 
@@ -16,6 +15,7 @@ contract Adoption {
     struct Goods {
         uint id;
         string name;
+        string ipfspic;
         uint price;
         Status status;
         address seller;
@@ -70,9 +70,9 @@ contract Adoption {
         goodsCount = 0;
     }
 
-    function addGoods(string _name, uint _price) public {
+    function addGoods(string _name, uint _price, string _ipfspic) public {
         uint _id = goodsCount;
-        goods[goodsCount] = Goods({id: _id, name: _name, price: _price, status: Status.ForSale, seller: msg.sender, buyer: 0});
+        goods[goodsCount] = Goods({id:_id, name:_name, ipfspic:_ipfspic, price:_price, status:Status.ForSale, seller:msg.sender, buyer:0});
         goodsCount += 1;
         emit ForSale(_id, goods[_id].price);
     }
@@ -147,23 +147,19 @@ contract Adoption {
         emit ForSale(id, goods[id].price);
     }
 
-    function getGoods() public view returns (Goods[]) {
-        Goods[] memory goodsList;
-        for(uint i = 0; i < goodsCount; i++) {
-            goodsList.push(goods[i]);
-        }
-        return goodsList;
-    }
-
-    function getGoods(Status status) public view returns (Goods[]) {
-        Goods[] memory goodsList;
-        for(uint i = 0; i < goodsCount; i++) {
-            if(goods[i].status == status) {
-                goodsList.push(goods[i]);
-            }
-        }
-
-        return goodsList;
+    function fetchGoods(uint _id) 
+    public 
+    view 
+    returns (uint id, string name, string ipfspic, uint price, uint state, address seller, address buyer) 
+    {
+        id = goods[_id].id; 
+        name = goods[_id].name;
+        ipfspic = goods[_id].ipfspic;
+        price = goods[_id].price;
+        state = uint(goods[_id].status);
+        seller = goods[_id].seller;
+        buyer = goods[_id].buyer;
+        return (id, name, ipfspic, price, state, seller, buyer);
     }
 
     // Adopting a pet
