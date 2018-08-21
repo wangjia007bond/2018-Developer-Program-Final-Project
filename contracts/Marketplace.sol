@@ -118,7 +118,6 @@ contract Marketplace {
     {
         goods[id].buyer = msg.sender;
         goods[id].status = Status.Sold;
-        owner.transfer(goods[id].price);
         emit LogSold(id, goods[id].price, goods[id].buyer);
     }
 
@@ -139,7 +138,6 @@ contract Marketplace {
         verifyCaller(goods[id].buyer)
     {
         goods[id].status = Status.Received;
-        owner.balance = owner.balance - goods[id].price;
         goods[id].seller.transfer(goods[id].price);
         emit LogReceived(id, goods[id].price, goods[id].buyer);
     }
@@ -209,5 +207,13 @@ contract Marketplace {
     // Retrieving the adopters
     function getAdopters() public view returns (address[16]) {
         return adopters;
+    }
+
+    function checkBalance() public view returns(uint) {
+        return address(this).balance;
+    }
+
+    function getAddress() public view returns(address) {
+        return address(this);
     }
 }

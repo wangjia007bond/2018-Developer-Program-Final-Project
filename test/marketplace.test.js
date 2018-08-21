@@ -38,7 +38,7 @@ contract('Marketplace', function(accounts){
 
     it("should allow someone to purchase a goods", async() => {
         const marketplace = await Marketplace.deployed()
-
+        const smartcontract = await marketplace.getAddress()
         var eventEmitted = false
 
         var event = marketplace.LogSold()
@@ -50,19 +50,19 @@ contract('Marketplace', function(accounts){
         const amount = web3.toWei(2, "ether")
 
         console.log('smart contract address:' + owner)
-        console.log('smart contract address:' + await marketplace.owner())
+        console.log('smart contract address:' + smartcontract)
 
 
-        var ownerBalanceBefore = await web3.eth.getBalance(owner).toNumber()
+        var scBalanceBefore = await web3.eth.getBalance(smartcontract).toNumber()
         var bobBalanceBefore = await web3.eth.getBalance(bob).toNumber()
-        console.log('smart contract balance before:' + ownerBalanceBefore)
+        console.log('smart contract balance before:' + scBalanceBefore)
         console.log('bob balance before:' + bobBalanceBefore)
 
         await marketplace.buyGoods(id, {from: bob, value: amount})
 
-        var ownerBalanceAfter = await web3.eth.getBalance(owner).toNumber()
+        var scBalanceAfter = await web3.eth.getBalance(smartcontract).toNumber()
         var bobBalanceAfter = await web3.eth.getBalance(bob).toNumber()
-        console.log('smart contract balance after:' + ownerBalanceAfter)
+        console.log('smart contract balance after:' + scBalanceAfter)
         console.log('bob balance after:' + bobBalanceAfter)
 
         const result = await marketplace.fetchGoods.call(id)
@@ -70,7 +70,7 @@ contract('Marketplace', function(accounts){
         assert.equal(result[4].toString(10), 1, 'the state of the item should be "Sold", which should be declared second in the State Enum')
         assert.equal(result[6], bob, 'the buyer address should be set bob when he purchases an item')
         assert.equal(eventEmitted, true, 'selling an item should emit a Sold event')
-        assert.equal(ownerBalanceAfter, ownerBalanceBefore + parseInt(price, 10), "owner's balance should be increased by the price of the item")
+        assert.equal(scBalanceAfter, scBalanceBefore + parseInt(price, 10), "owner's balance should be increased by the price of the item")
         assert.isBelow(bobBalanceAfter, bobBalanceBefore - price, "bob's balance should be reduced by more than the price of the item (including gas costs)")
     })
 
@@ -97,31 +97,7 @@ contract('Marketplace', function(accounts){
         const marketplace = await Marketplace.deployed()
 
         var eventEmitted = false
-
-        var event = marketplace.LogReceived()
-        await event.watch((err, res) => {
-            id = res.args.id.toString(10)
-            eventEmitted = true
-        })
-
-        var ownerBalanceBefore = await web3.eth.getBalance(owner).toNumber()
-        var aliceBalanceBefore = await web3.eth.getBalance(alice).toNumber()
-        console.log('smart contract balance before:' + ownerBalanceBefore)
-        console.log('alice balance before:' + aliceBalanceBefore)
-
-        await marketplace.receiveGoods(id, {from: bob})
-
-        var ownerBalanceAfter = await web3.eth.getBalance(owner).toNumber()
-        var aliceBalanceAfter = await web3.eth.getBalance(alice).toNumber()
-        console.log('smart contract balance after:' + ownerBalanceAfter)
-        console.log('alice balance after:' + aliceBalanceAfter)
-
-        const result = await marketplace.fetchGoods.call(id)
-
-        assert.equal(eventEmitted, true, 'receiving an item should emit a Shipped event')
-        assert.equal(result[4].toString(10), 3, 'the state of the item should be "Received", which should be declared fourth in the State Enum')
-        assert.equal(ownerBalanceAfter, ownerBalanceBefore - parseInt(price, 10), "owner's balance should be increased by the price of the item")
-        assert.equal(aliceBalanceAfter, aliceBalanceBefore + price, "bob's balance should be reduced by more than the price of the item (including gas costs)")
+        
     })
     // Test for failing conditions in this contracts
     // test that every modifier is working
