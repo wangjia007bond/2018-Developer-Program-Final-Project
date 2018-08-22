@@ -1,6 +1,8 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.23;
 
-contract Marketplace {
+import "./common/Destructible.sol";
+
+contract Marketplace is Destructible {
 
     address[16] public adopters;
 
