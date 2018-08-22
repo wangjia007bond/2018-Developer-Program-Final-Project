@@ -14,6 +14,7 @@ class AddGoods extends Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleNameChange = this.handleNameChange.bind(this)
         this.handlePriceChange = this.handlePriceChange.bind(this)
+        this.refreshGoodsList = this.refreshGoodsList.bind(this)
     }
 
     componentWillMount() {
@@ -21,9 +22,48 @@ class AddGoods extends Component {
             this.setState({
                 web3: results.web3
             })
+            this.refreshGoodsList()
         })
         .catch(() => {
             console.log('Error finding web3.')
+        })
+    }
+
+    refreshGoodsList() {
+        var that = this
+        const contract = require('truffle-contract')
+        const marketplace = contract(MarketplaceContract)
+        marketplace.setProvider(this.state.web3.currentProvider)
+
+        var marketplaceInstance
+
+        this.state.web3.eth.getAccounts(function(error, accounts) {
+            if(error) {
+                console.log(error)
+            }
+
+            var account = accounts[0]
+            var goodsCount
+            console.log('Duck address is:' + account)
+
+            marketplace.deployed().then(function(instance) {
+                marketplaceInstance = instance;
+
+                return marketplaceInstance.getAddress.call()
+            }).then(function(result) {
+                console.log("smart contract address:" + result)
+                return marketplaceInstance.goodsCount.call()
+            }).then(function(result) {
+                goodsCount = result
+                that.setState({ goodsList: [] })
+                for(var i = 0; i < goodsCount; i++) {
+                    marketplaceInstance.fetchGoods.call(i).then(function(result) {
+                        that.setState(prevState => ({
+                            goodsList: prevState.goodsList.concat(result)
+                        }))
+                    })
+                }
+            })
         })
     }
 
@@ -38,6 +78,7 @@ class AddGoods extends Component {
     }
 
     handleSubmit(e) {
+        var that = this
         e.preventDefault()
         if (!this.state.name.length ||  !this.state.price.length) {
             return;
@@ -66,6 +107,7 @@ class AddGoods extends Component {
                 console.log("into marketplace.deployed()")
                 return marketplaceInstance.addGoods(name, price, '0x123ASDe23', {from: account})
             }).then(function(result) {
+                that.refreshGoodsList()
             }).catch(function(err) {
                 console.log(err.message)
             })
@@ -97,9 +139,9 @@ class AddGoods extends Component {
                   Add Goods
                 </button>
               </form>
+              <GoodsList goodsList={this.state.goodsList} />
             </div>
-            (<GoodsList goodsList={this.state.goodsList} />)
-            );
+        );
     }
 }
 
@@ -108,7 +150,11 @@ class GoodsList extends Component {
         return (
             <ul>
               {this.props.goodsList.map(goods => (
-                (<li key={goods.id}>{goods.id}</li>)(<li key={goods.name}>{goods.name}</li>)(<li key={goods.price}>{goods.price}</li>)
+                <div>
+                <li key={goods.id}>{goods.id}</li>
+                <li>{goods.name}</li>
+                <li>{goods.price}</li>
+                </div>
               ))}
             </ul>
         ); 
