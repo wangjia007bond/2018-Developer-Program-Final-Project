@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Goods from "../../goods/Goods.js";
-import AdoptionContract from '../../../build/contracts/Adoption.json'
+import MarketplaceContract from '../../../build/contracts/Marketplace.json'
 import goodsListData from "../../pets.json";
 import getWeb3 from '../../util/getWeb3'
 
@@ -37,21 +37,20 @@ class Marketplace extends Component {
      */
 
     const contract = require('truffle-contract')
-    const adoption = contract(AdoptionContract)
-    adoption.setProvider(this.state.web3.currentProvider)
+    const marketplace = contract(MarketplaceContract)
+    marketplace.setProvider(this.state.web3.currentProvider)
 
-    // Declaring this for later so we can chain functions on Adoption.
-    var adoptionInstance
+    var marketplaceInstance
     var newGoodList = this.state.goodsList
 
     // Get accounts.
     this.state.web3.eth.getAccounts((error, accounts) => {
 
-      adoption.deployed().then((instance) => {
-        adoptionInstance = instance
+      marketplace.deployed().then((instance) => {
+        marketplaceInstance = instance
 
         // Stores a given value, 5 by default.
-        return adoptionInstance.getAdopters.call()
+        return marketplaceInstance.getAdopters.call()
       }).then((adopters) => {
         // Get the value from the contract to prove it worked.
         for (var i = 0; i < adopters.length; i++) {

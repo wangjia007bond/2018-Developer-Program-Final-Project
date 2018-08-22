@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AdoptionContract from '../../build/contracts/Adoption.json'
+import MarketplaceContract from '../../build/contracts/Marketplace.json'
 import getWeb3 from '../util/getWeb3'
 
 class Goods extends Component {
@@ -37,11 +37,10 @@ class Goods extends Component {
      */
 
     const contract = require('truffle-contract')
-    const adoption = contract(AdoptionContract)
-    adoption.setProvider(this.state.web3.currentProvider)
+    const marketplace = contract(MarketplaceContract)
+    marketplace.setProvider(this.state.web3.currentProvider)
 
-    // Declaring this for later so we can chain functions on Adoption.
-    var adoptionInstance;
+    var marketplaceInstance;
 
     this.state.web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -51,11 +50,11 @@ class Goods extends Component {
       var account = accounts[0];
       console.log("Hello Duck account, address:" + account);
 
-      adoption.deployed().then(function(instance) {
-        adoptionInstance = instance;
+      marketplace.deployed().then(function(instance) {
+        marketplaceInstance = instance;
     
         // Execute adopt as a transaction by sending account
-        return adoptionInstance.adopt(petId, {from: account});
+        return marketplaceInstance.adopt(petId, {from: account});
       }).then(function(result) {
         this.props.adoptedOnePet(this.props.id);
       }).catch(function(err) {
