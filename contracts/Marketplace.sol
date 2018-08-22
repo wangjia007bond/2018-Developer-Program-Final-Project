@@ -101,11 +101,15 @@ contract Marketplace {
         goodsCount = 0;
     }
 
-    function addGoods(string _name, uint _price, string _ipfspic) public {
+    function addGoods(string _name, uint _price, string _ipfspic) 
+        public
+        returns (uint)
+    {
         uint _id = goodsCount;
         goods[goodsCount] = Goods({id:_id, name:_name, price:_price, ipfspic:_ipfspic, status:Status.ForSale, seller:msg.sender, buyer:0});
         goodsCount += 1;
         emit LogForSale(_id, goods[_id].price);
+        return goodsCount;
     }
 
     // buy a goods

@@ -3,7 +3,7 @@ var Marketplace = artifacts.require('Marketplace')
 contract('Marketplace', function(accounts){
     const owner = accounts[0]
     const alice = accounts[1]
-    const bob =accounts[2]
+    const bob = accounts[2]
     const emptyAddress = '0x0000000000000000000000000000000000000000'
 
     var id
@@ -23,8 +23,9 @@ contract('Marketplace', function(accounts){
         const name = "iPhone"
         const ipfspic = "0x424oj2gu5k2hb3442b3"
 
-        await marketplace.addGoods(name, price, ipfspic, {from: alice})
-
+        const goodsCount = await marketplace.addGoods(name, price, ipfspic, {from: alice})
+        console.log("goods count:" + goodsCount)
+        console.log("id:" + id)
         const result = await marketplace.fetchGoods.call(id)
 
         assert.equal(result[1], name, 'the name of the last added item does not match the expected value')
