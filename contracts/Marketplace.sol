@@ -3,9 +3,7 @@ pragma solidity ^0.4.23;
 import "./common/Destructible.sol";
 
 contract Marketplace is Destructible {
-
-    address[16] public adopters;
-
+    
     // Let's make sure everyone knows who owns the TradeMyUsedStuff Website
     address public owner;
 
@@ -200,19 +198,6 @@ contract Marketplace is Destructible {
         
         emit LogFetch(id, name, price, ipfspic, state, seller, buyer);
         return (id, name, price, ipfspic, state, seller, buyer);
-    }
-
-    // Adopting a pet
-    function adopt(uint petId) public returns (uint) {
-
-        adopters[petId] = msg.sender;
-
-        return petId;
-    }
-
-    // Retrieving the adopters
-    function getAdopters() public view returns (address[16]) {
-        return adopters;
     }
 
     function checkBalance() public view returns(uint) {
