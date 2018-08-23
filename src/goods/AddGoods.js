@@ -198,6 +198,76 @@ class AddGoods extends Component {
 }
 
 class GoodsList extends Component {
+
+    constructor(props) {
+        super(props)
+        this.handleBuy = this.handleBuy.bind(this)
+        this.getBalance = this.getBalance.bind(this)
+        this.web3 = null
+    }
+
+    componentDidMount() {
+        getWeb3.then(results => {
+            this.setState({
+                web3: results.web3
+            })
+        })
+        .catch(() => {
+            console.log('Error finding web3.')
+        })
+    }
+    
+    getBalance (address) {
+        var that = this
+        return new Promise(function(resolve, reject) {
+            that.state.web3.eth.getBalance(address, function(error, result) {
+                if(error) {
+                    reject(error)
+                } else {
+                    resolve(result)
+                }
+            })
+        })
+    }
+
+    handleBuy(id, price) {
+        var that = this
+
+        console.log(id)
+        const contract = require('truffle-contract')
+        const marketplace = contract(MarketplaceContract)
+        marketplace.setProvider(this.state.web3.currentProvider)
+
+        var marketplaceInstance
+
+        this.state.web3.eth.getAccounts(function(error, accounts) {
+            if(error) {
+                console.log(error)
+            }
+
+            var account = accounts[0]
+            console.log("Duck account address:" + account)
+
+            that.getBalance(account).then(function(balance) {
+
+                var accountBalance = balance.toNumber()
+                marketplace.deployed().then(function(instance) {
+                    marketplaceInstance = instance
+    
+                    var event = marketplaceInstance.LogSold()
+                    event.watch((err, res) => {
+                        id = res.args.id.toString(10)
+                        console.log("Buy goods successfully, goods id:" + id)
+                    })
+    
+                    return marketplaceInstance.buyGoods(id, {from: account, value: price * 2})
+                })
+            })
+
+        })
+
+    }
+
     render() {
         return (
             <div>
@@ -211,7 +281,10 @@ class GoodsList extends Component {
                   <button
                     type="button"
                     data-id="0"
-                    onClick={this.handleAdopt}
+                    onClick={(event) => {
+                        event.preventDefault() 
+                        this.handleBuy(goods.id, goods.price)
+                    }}
                   >Buy
                   </button>
                 </div>
