@@ -8,7 +8,6 @@ import { UserIsAuthenticated } from './util/wrappers.js'
 // Layouts
 import App from './App'
 import Home from './layouts/home/Home'
-import AddGoods from './goods/AddGoods'
 import Marketplace from './layouts/marketplace/Marketplace'
 import Profile from './user/layouts/profile/Profile'
 
@@ -21,7 +20,7 @@ ReactDOM.render((
     <Provider store={store}>
       <Router history={history}>
         <Route path="/" component={App}>
-          <IndexRoute component={AddGoods} />
+          <IndexRoute component={Marketplace} />
           <Route path="marketplace" component={UserIsAuthenticated(Marketplace)} />
           <Route path="profile" component={UserIsAuthenticated(Profile)} />
         </Route>
