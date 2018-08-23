@@ -7,7 +7,7 @@ class Marketplace extends Component {
   constructor(props) {
     super(props)
     this.state = { 
-      goodsList: [], 
+      marketGoodsList: [],
       name: '', 
       price: 0,
       ipfspic: null,
@@ -66,7 +66,7 @@ class Marketplace extends Component {
         return marketplaceInstance.goodsCount.call()
       }).then(function(result) {
         goodsCount = result
-        that.setState({ goodsList: [] })
+        that.setState({ marketGoodsList: [] })
         for(var i = 0; i < goodsCount; i++) {
           marketplaceInstance.fetchGoods.call(i).then(function(result) {
             const goods = {
@@ -75,9 +75,12 @@ class Marketplace extends Component {
               price: result[2].toString(10),
               picture: 'https://ipfs.io/ipfs/' + result[3]
             }
-            that.setState({
-              goodsList: that.state.goodsList.concat(goods)
-            })
+            // add new goods to sell list
+            if(result[6] === '0x0000000000000000000000000000000000000000') {
+              that.setState({
+                marketGoodsList: that.state.marketGoodsList.concat(goods)
+              })
+            }
           })
         }
       })
@@ -190,14 +193,18 @@ class Marketplace extends Component {
             Add Goods
           </button>
         </form>
+        <h3>——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————</h3>
         <h3>All avaliable goods in our website:</h3>
-        <GoodsList goodsList={this.state.goodsList} />
+        <MarketGoodsList marketGoodsList={this.state.marketGoodsList} />
+        <h3>——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————</h3>
+        <h3>All goods You have brought:</h3>
+        <MarketGoodsList marketGoodsList={this.state.marketGoodsList} />
       </div>
     )
   }
 }
 
-class GoodsList extends Component {
+class MarketGoodsList extends Component {
 
   constructor(props) {
     super(props)
@@ -269,11 +276,10 @@ class GoodsList extends Component {
     return (
       <div>
         <ul>
-          {this.props.goodsList.map(goods => (
+          {this.props.marketGoodsList.map(goods => (
             <div key={goods.id}>
-              <li>{goods.id}</li>
-              <li>{goods.name}</li>
-              <li>{goods.price}</li>
+              <li>Name: {goods.name}</li>
+              <li>Price: {goods.price}</li>
               <img src={goods.picture} height="200" width="200"></img>
               <button
                 type="button"
