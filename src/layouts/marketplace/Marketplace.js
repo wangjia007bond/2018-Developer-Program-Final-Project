@@ -289,7 +289,7 @@ class MarketGoodsList extends Component {
             <div key={goods.id}>
               <li>Name: {goods.name}</li>
               <li>Price: {goods.price}</li>
-              <img src={goods.picture} height="200" width="200"></img>
+              <img src={goods.picture} height="100" width="100"></img>
               <button
                 type="button"
                 data-id="0"
