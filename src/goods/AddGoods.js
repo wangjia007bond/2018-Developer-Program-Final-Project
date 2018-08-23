@@ -27,7 +27,6 @@ class AddGoods extends Component {
             this.setState({
                 web3: results.web3
             })
-            this.refreshGoodsList()
         })
         .catch(() => {
             console.log('Error finding web3.')
@@ -35,6 +34,10 @@ class AddGoods extends Component {
         this.setState({
             ipfs: ipfs
         })
+    }
+
+    componentDidMount() {
+        this.refreshGoodsList()
     }
 
     refreshGoodsList() {
@@ -179,8 +182,8 @@ class GoodsList extends Component {
         return (
             <ul>
               {this.props.goodsList.map(goods => (
-                <div>
-                <li key={goods.id}>{goods.id}</li>
+                <div key={goods.id}>
+                <li>{goods.id}</li>
                 <li>{goods.name}</li>
                 <li>{goods.price}</li>
                 </div>
