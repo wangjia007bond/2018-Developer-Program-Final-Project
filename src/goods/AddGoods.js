@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import MarketplaceContract from '../../build/contracts/Marketplace.json'
 import getWeb3 from '../util/getWeb3'
+import ipfs from '../util/ipfs'
 
 class AddGoods extends Component {
     constructor(props) {
@@ -9,11 +10,15 @@ class AddGoods extends Component {
             goodsList: [], 
             name: '', 
             price: 0,
-            web3: null 
+            ipfspic: null,
+            buffer: '',
+            web3: null,
+            ipfs: null
         }
         this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleNameChange = this.handleNameChange.bind(this)
-        this.handlePriceChange = this.handlePriceChange.bind(this)
+        this.handleName = this.handleName.bind(this)
+        this.handlePrice = this.handlePrice.bind(this)
+        this.handleFile = this.handleFile.bind(this)
         this.refreshGoodsList = this.refreshGoodsList.bind(this)
     }
 
@@ -26,6 +31,9 @@ class AddGoods extends Component {
         })
         .catch(() => {
             console.log('Error finding web3.')
+        })
+        this.setState({
+            ipfs: ipfs
         })
     }
 
@@ -67,14 +75,27 @@ class AddGoods extends Component {
         })
     }
 
-    handleNameChange(e) {
+    handleName(e) {
         this.setState({ name: e.target.value })
-        console.log("handleNameChange:" + this.state.name)
+        console.log("handleName:" + this.state.name)
     }   
 
-    handlePriceChange(e) {
+    handlePrice(e) {
         this.setState({ price: e.target.value })
-        console.log("handlePriceChange" + this.state.price)
+        console.log("handlePrice" + this.state.price)
+    }
+
+    handleFile(e) {
+        var that = this
+        e.stopPropagation()
+        e.preventDefault()
+
+        const file = e.target.files[0]
+        let reader = new window.FileReader()
+        reader.readAsArrayBuffer(file)
+        Buffer.from(reader.result).then(function(buffer) {
+            that.setState({buffer})
+        })
     }
 
     handleSubmit(e) {
@@ -124,7 +145,7 @@ class AddGoods extends Component {
                 </label>
                 <input
                   id="name"
-                  onChange={this.handleNameChange}
+                  onChange={this.handleName}
                   value={this.state.name}
                 />
                 <label htmlFor="price">
@@ -132,8 +153,16 @@ class AddGoods extends Component {
                 </label>
                 <input
                   id="price"
-                  onChange={this.handlePriceChange}
+                  onChange={this.handlePrice}
                   value={this.state.price}
+                />
+                <label htmlFor="picture">
+                  Picture:
+                </label>
+                <input
+                  type = "file"
+                  id="picture"
+                  onChange={this.handleFile}
                 />
                 <button>
                   Add Goods
