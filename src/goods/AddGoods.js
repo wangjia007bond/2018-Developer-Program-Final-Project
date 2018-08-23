@@ -72,7 +72,8 @@ class AddGoods extends Component {
                         const goods = {
                             id: result[0].toString(10),
                             name: result[1],
-                            price: result[2].toString(10)
+                            price: result[2].toString(10),
+                            picture: 'https://ipfs.io/ipfs/' + result[3]
                         }
                         that.setState({
                             goodsList: that.state.goodsList.concat(goods)
@@ -189,6 +190,7 @@ class AddGoods extends Component {
                   Add Goods
                 </button>
               </form>
+              <h3>All avaliable goods in our website:</h3>
               <GoodsList goodsList={this.state.goodsList} />
             </div>
         );
@@ -205,6 +207,13 @@ class GoodsList extends Component {
                   <li>{goods.id}</li>
                   <li>{goods.name}</li>
                   <li>{goods.price}</li>
+                  <img src={goods.picture} height="200" width="200"></img>
+                  <button
+                    type="button"
+                    data-id="0"
+                    onClick={this.handleAdopt}
+                  >Buy
+                  </button>
                 </div>
               ))}
             </ul>
