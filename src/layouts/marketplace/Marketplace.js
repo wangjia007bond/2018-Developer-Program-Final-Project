@@ -8,6 +8,8 @@ class Marketplace extends Component {
     super(props)
     this.state = { 
       marketGoodsList: [],
+      purchasedGoodsList: [],
+      ownedGoodsList: [],
       name: '', 
       price: 0,
       ipfspic: null,
@@ -67,6 +69,7 @@ class Marketplace extends Component {
       }).then(function(result) {
         goodsCount = result
         that.setState({ marketGoodsList: [] })
+        that.setState({ purchasedGoodsList: [] })
         for(var i = 0; i < goodsCount; i++) {
           marketplaceInstance.fetchGoods.call(i).then(function(result) {
             const goods = {
@@ -76,10 +79,16 @@ class Marketplace extends Component {
               picture: 'https://ipfs.io/ipfs/' + result[3]
             }
             // add new goods to sell list
-            if(result[6] === '0x0000000000000000000000000000000000000000') {
+            if(result[6] === '0x0000000000000000000000000000000000000000' /*&& result[5] !== account*/) {
               that.setState({
                 marketGoodsList: that.state.marketGoodsList.concat(goods)
               })
+            }
+
+            if(result[6] === account) {
+              that.setState({
+                purchasedGoodsList: that.state.purchasedGoodsList.concat(goods)
+              })              
             }
           })
         }
@@ -198,7 +207,7 @@ class Marketplace extends Component {
         <MarketGoodsList marketGoodsList={this.state.marketGoodsList} />
         <h3>——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————</h3>
         <h3>All goods You have brought:</h3>
-        <MarketGoodsList marketGoodsList={this.state.marketGoodsList} />
+        <MarketGoodsList marketGoodsList={this.state.purchasedGoodsList} />
       </div>
     )
   }
