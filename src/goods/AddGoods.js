@@ -101,16 +101,18 @@ class AddGoods extends Component {
         const file = e.target.files[0]
         let reader = new window.FileReader()
         reader.readAsArrayBuffer(file)
-        const buffer = Buffer.from(reader.result)
-        that.setState({
-            buffer: buffer
-        })
+        reader.onload = function() {
+            const buffer = Buffer.from(reader.result)
+            that.setState({
+                buffer: buffer
+            })
+        }
     }
 
     handleSubmit(e) {
         var that = this
         e.preventDefault()
-        if (!this.state.name.length ||  !this.state.price.length) {
+        if (!this.state.name.length ||  !this.state.price.length ||  !this.state.buffer.length) {
             return;
         }
 
@@ -124,22 +126,32 @@ class AddGoods extends Component {
         var name = this.state.name
         var price = this.state.price
 
-        this.state.web3.eth.getAccounts(function(error, accounts) {
-            if(error) {
-                console.log(error)
-            }
+        ipfs.add(this.state.buffer, function(err, ipfsHash) {
+            console.log(err,ipfsHash)
+            //setState by setting ipfsHash to ipfsHash[0].hash 
+            that.setState({ 
+                ipfspic: ipfsHash[0].hash 
+            })
 
-            var account = accounts[0]
-            console.log("Duck Address is:" + account)
+            var ipfspic = that.state.ipfspic
 
-            marketplace.deployed().then(function(instance) {
-                marketplaceInstance = instance
-                console.log("into marketplace.deployed()")
-                return marketplaceInstance.addGoods(name, price, '0x123ASDe23', {from: account})
-            }).then(function(result) {
-                that.refreshGoodsList()
-            }).catch(function(err) {
-                console.log(err.message)
+            that.state.web3.eth.getAccounts(function(error, accounts) {
+                if(error) {
+                    console.log(error)
+                }
+    
+                var account = accounts[0]
+                console.log("Duck Address is:" + account)
+    
+                marketplace.deployed().then(function(instance) {
+                    marketplaceInstance = instance
+                    console.log("into marketplace.deployed()")
+                    return marketplaceInstance.addGoods(name, price, ipfspic, {from: account})
+                }).then(function(result) {
+                    that.refreshGoodsList()
+                }).catch(function(err) {
+                    console.log(err.message)
+                })
             })
         })
     }
@@ -169,7 +181,7 @@ class AddGoods extends Component {
                   Picture:
                 </label>
                 <input
-                  type = "file"
+                  type="file"
                   id="picture"
                   onChange={this.handleFile}
                 />
@@ -186,6 +198,7 @@ class AddGoods extends Component {
 class GoodsList extends Component {
     render() {
         return (
+            <div>
             <ul>
               {this.props.goodsList.map(goods => (
                 <div key={goods.id}>
@@ -195,6 +208,7 @@ class GoodsList extends Component {
                 </div>
               ))}
             </ul>
+            </div>
         ); 
     }
 }
