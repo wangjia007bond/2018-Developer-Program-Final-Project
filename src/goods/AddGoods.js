@@ -23,10 +23,14 @@ class AddGoods extends Component {
     }
 
     componentWillMount() {
+    }
+
+    componentDidMount() {
         getWeb3.then(results => {
             this.setState({
                 web3: results.web3
             })
+            this.refreshGoodsList()
         })
         .catch(() => {
             console.log('Error finding web3.')
@@ -34,10 +38,6 @@ class AddGoods extends Component {
         this.setState({
             ipfs: ipfs
         })
-    }
-
-    componentDidMount() {
-        this.refreshGoodsList()
     }
 
     refreshGoodsList() {
@@ -69,9 +69,14 @@ class AddGoods extends Component {
                 that.setState({ goodsList: [] })
                 for(var i = 0; i < goodsCount; i++) {
                     marketplaceInstance.fetchGoods.call(i).then(function(result) {
-                        that.setState(prevState => ({
-                            goodsList: prevState.goodsList.concat(result)
-                        }))
+                        const goods = {
+                            id: result[0].toString(10),
+                            name: result[1],
+                            price: result[2].toString(10)
+                        }
+                        that.setState({
+                            goodsList: that.state.goodsList.concat(goods)
+                        })
                     })
                 }
             })
@@ -96,8 +101,9 @@ class AddGoods extends Component {
         const file = e.target.files[0]
         let reader = new window.FileReader()
         reader.readAsArrayBuffer(file)
-        Buffer.from(reader.result).then(function(buffer) {
-            that.setState({buffer})
+        const buffer = Buffer.from(reader.result)
+        that.setState({
+            buffer: buffer
         })
     }
 
@@ -183,9 +189,9 @@ class GoodsList extends Component {
             <ul>
               {this.props.goodsList.map(goods => (
                 <div key={goods.id}>
-                <li>{goods.id}</li>
-                <li>{goods.name}</li>
-                <li>{goods.price}</li>
+                  <li>{goods.id}</li>
+                  <li>{goods.name}</li>
+                  <li>{goods.price}</li>
                 </div>
               ))}
             </ul>
