@@ -1,7 +1,10 @@
 # 2018-Developer-Program-Final-Project
 
 ## TradeMyUsedStuff
-The best online marketplace to buy and sell used stuff.
+The best online marketplace to buy and sell used stuff, you can uplist your used goods and buy goods which in the website.
+
+### Flow Chart
+![flowchart][flowchart]
 
 ## Environment Setup
 
@@ -33,3 +36,5 @@ The best online marketplace to buy and sell used stuff.
     ```
     npm run start
     ```
+
+[flowchart]: README-resources/marketplace.png
