@@ -2,31 +2,19 @@ pragma solidity ^0.4.23;
 
 import "./common/Destructible.sol";
 import "./common/Pausable.sol";
+import "./libs/GoodsLib.sol";
 
 contract Marketplace is Destructible, Pausable {
-    
+
+    using GoodsLib for GoodsLib.Goods;
+    using GoodsLib for GoodsLib.Status;
+
     // Let's make sure everyone knows who owns the TradeMyUsedStuff Website
     address public owner;
-
-    /* Create a enum named status for goods, 
-    contain ForSale, Sold, Shipped, Received, Return, Return Shipped and Return Received */
-    enum Status { ForSale, Sold, Shipped, Received, Return, RShipped, RReceived }
-
-    // Create a struct named Goods, contain id, name, price, state, seller, and buyer
-    struct Goods {
-        uint id;
-        string name;
-        uint price;
-        string ipfspic;
-        Status status;
-        address seller;
-        address buyer;
-    }
-
     // Add a variable called goodsCount to track the most recent goods
     uint public goodsCount;
     // Add a line that creates a public mapping that maps the id to an Goods.
-    mapping(uint => Goods) goods;
+    mapping(uint => GoodsLib.Goods) goodsList;
 
     // Create 7 events with the same name as each possible State
     event LogForSale(uint id, uint price);
@@ -37,12 +25,6 @@ contract Marketplace is Destructible, Pausable {
     event LogRShipped(uint id, uint price, address buyer);
     event LogRReceived(uint id, uint price, address seller);
     event LogFetch(uint id, string name, uint price, string ipfspic, uint status, address seller, address buyer);
-
-    // Create a modifer that checks if the msg.sender is the owner of the contract
-    modifier ownerOnly() { 
-        require (msg.sender == owner); 
-        _;
-    }
 
     modifier verifyCaller(address _address) { 
         require (msg.sender == _address); 
@@ -57,40 +39,40 @@ contract Marketplace is Destructible, Pausable {
     modifier checkValue(uint _id) {
         //refund after pay for goods
         _;
-        uint _price = goods[_id].price;
+        uint _price = goodsList[_id].price;
         uint amountToRefund = msg.value - _price;
-        goods[_id].buyer.transfer(amountToRefund);
+        goodsList[_id].buyer.transfer(amountToRefund);
     }
     
     /* For each of the following modifiers, use what you learned about modifiers
    to give them functionality. For example, the forSale modifier should require
    that the item with the given id has the status ForSale. */
     modifier forSale(uint id) { 
-        require(goods[id].status == Status.ForSale); 
+        require(goodsList[id].status == GoodsLib.Status.ForSale); 
         _; 
     }
     modifier sold(uint id) { 
-        require(goods[id].status == Status.Sold); 
+        require(goodsList[id].status == GoodsLib.Status.Sold); 
         _;
     }
     modifier shipped(uint id) { 
-        require(goods[id].status == Status.Shipped); 
+        require(goodsList[id].status == GoodsLib.Status.Shipped); 
         _; 
     }
     modifier received(uint id) { 
-        require(goods[id].status == Status.Received); 
+        require(goodsList[id].status == GoodsLib.Status.Received); 
         _; 
     }
     modifier returned(uint id) { 
-        require(goods[id].status == Status.Return); 
+        require(goodsList[id].status == GoodsLib.Status.Return); 
         _;
     }
     modifier rshipped(uint id) { 
-        require(goods[id].status == Status.RShipped); 
+        require(goodsList[id].status == GoodsLib.Status.RShipped); 
         _;
     }
     modifier rreceived(uint id) {
-        require(goods[id].status == Status.RReceived); 
+        require(goodsList[id].status == GoodsLib.Status.RReceived); 
         _;
     }
 
@@ -108,9 +90,9 @@ contract Marketplace is Destructible, Pausable {
         returns (uint)
     {
         uint _id = goodsCount;
-        goods[goodsCount] = Goods({id:_id, name:_name, price:_price, ipfspic:_ipfspic, status:Status.ForSale, seller:msg.sender, buyer:0});
+        goodsList[goodsCount] = GoodsLib.addGoods(_id, _name, _price, _ipfspic);
         goodsCount += 1;
-        emit LogForSale(_id, goods[_id].price);
+        emit LogForSale(_id, goodsList[_id].price);
         return goodsCount;
     }
 
@@ -119,36 +101,34 @@ contract Marketplace is Destructible, Pausable {
         public 
         payable
         forSale(id)
-        paidEnough(goods[id].price)
+        paidEnough(goodsList[id].price)
         checkValue(id)
         whenNotPaused
     {
-        goods[id].buyer = msg.sender;
-        goods[id].status = Status.Sold;
-        emit LogSold(id, goods[id].price, goods[id].buyer);
+        goodsList[id].buyGoods();
+        emit LogSold(id, goodsList[id].price, goodsList[id].buyer);
     }
 
     // ship a goods
     function shipGoods(uint id) 
         public
         sold(id)
-        verifyCaller(goods[id].seller)
+        verifyCaller(goodsList[id].seller)
         whenNotPaused
     {
-        goods[id].status = Status.Shipped;
-        emit LogShipped(id, goods[id].price, goods[id].seller);
+        goodsList[id].shipGoods();
+        emit LogShipped(id, goodsList[id].price, goodsList[id].seller);
     }
 
     // received a goods
     function receiveGoods(uint id)
         public
         shipped(id)
-        verifyCaller(goods[id].buyer)
+        verifyCaller(goodsList[id].buyer)
         whenNotPaused
     {
-        goods[id].status = Status.Received;
-        goods[id].seller.transfer(goods[id].price);
-        emit LogReceived(id, goods[id].price, goods[id].buyer);
+        goodsList[id].receiveGoods();
+        emit LogReceived(id, goodsList[id].price, goodsList[id].buyer);
     }
 
     function returnedGoods(uint id)
@@ -157,54 +137,53 @@ contract Marketplace is Destructible, Pausable {
         received(id)
         whenNotPaused
     {
-        goods[id].status = Status.Return;
-        emit LogReturn(id, goods[id].price, goods[id].buyer);
+        goodsList[id].returnedGoods();
+        emit LogReturn(id, goodsList[id].price, goodsList[id].buyer);
     }
 
     function returnShipGoods(uint id) 
         public
         returned(id)
-        verifyCaller(goods[id].seller)
+        verifyCaller(goodsList[id].seller)
         whenNotPaused
     {
-        goods[id].status = Status.RShipped;
-        emit LogRShipped(id, goods[id].price, goods[id].buyer);
+        goodsList[id].returnShipGoods();
+        emit LogRShipped(id, goodsList[id].price, goodsList[id].buyer);
     }
 
     function returnReceiveGoods(uint id) 
         public
         rshipped(id)
-        verifyCaller(goods[id].seller)   
+        verifyCaller(goodsList[id].seller)   
         whenNotPaused
     {
-        goods[id].status = Status.RReceived;
-        goods[id].buyer.transfer(goods[id].price);
-        emit LogRReceived(id, goods[id].price, goods[id].seller);
+        goodsList[id].returnReceiveGoods();
+        emit LogRReceived(id, goodsList[id].price, goodsList[id].seller);
     }
 
     function relistGoods(uint id)
         public
         rreceived(id)
-        verifyCaller(goods[id].seller) 
+        verifyCaller(goodsList[id].seller) 
         whenNotPaused
     {
-        goods[id].status = Status.ForSale;
-        emit LogForSale(id, goods[id].price);
+        goodsList[id].relistGoods();
+        emit LogForSale(id, goodsList[id].price);
     }
 
     function fetchGoods(uint _id) 
         public 
-        view 
+        view
         whenNotPaused
         returns (uint id, string name, uint price, string ipfspic, uint state, address seller, address buyer) 
     {
-        id = goods[_id].id; 
-        name = goods[_id].name;
-        price = goods[_id].price;
-        ipfspic = goods[_id].ipfspic;
-        state = uint(goods[_id].status);
-        seller = goods[_id].seller;
-        buyer = goods[_id].buyer;
+        id = goodsList[_id].id; 
+        name = goodsList[_id].name;
+        price = goodsList[_id].price;
+        ipfspic = goodsList[_id].ipfspic;
+        state = uint(goodsList[_id].status);
+        seller = goodsList[_id].seller;
+        buyer = goodsList[_id].buyer;
         
         emit LogFetch(id, name, price, ipfspic, state, seller, buyer);
         return (id, name, price, ipfspic, state, seller, buyer);

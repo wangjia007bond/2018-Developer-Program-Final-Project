@@ -28,6 +28,8 @@ contract('Marketplace', function(accounts){
         console.log("id:" + id)
         const result = await marketplace.fetchGoods.call(id)
 
+        console.log('id:' + result[0] + ', name:' + result[1] + ', price:' + result[2] + ', ipfspic:' + result[3] + ', status:' + result[4] + ', seller:' + result[5] + ', buyer:' + result[6])
+
         assert.equal(result[1], name, 'the name of the last added item does not match the expected value')
         assert.equal(result[2].toString(10), price, 'the price of the last added item does not match the expected value')
         assert.equal(result[3], ipfspic, 'the state of the item should be "For Sale", which should be declared first in the State Enum')
@@ -68,6 +70,8 @@ contract('Marketplace', function(accounts){
 
         const result = await marketplace.fetchGoods.call(id)
 
+        console.log('id:' + result[0] + ', name:' + result[1] + ', price:' + result[2] + ', ipfspic:' + result[3] + ', status:' + result[4] + ', seller:' + result[5] + ', buyer:' + result[6])
+
         assert.equal(result[4].toString(10), 1, 'the state of the item should be "Sold", which should be declared second in the State Enum')
         assert.equal(result[6], bob, 'the buyer address should be set bob when he purchases an item')
         assert.equal(eventEmitted, true, 'selling an item should emit a Sold event')
@@ -89,6 +93,8 @@ contract('Marketplace', function(accounts){
         await marketplace.shipGoods(id, {from: alice})
 
         const result = await marketplace.fetchGoods.call(id)
+
+        console.log('id:' + result[0] + ', name:' + result[1] + ', price:' + result[2] + ', ipfspic:' + result[3] + ', status:' + result[4] + ', seller:' + result[5] + ', buyer:' + result[6])
 
         assert.equal(eventEmitted, true, 'Shipping an item should emit a Shipped event')
         assert.equal(result[4].toString(10), 2, 'the state of the item should be "Shipped", which should be declared third in the State Enum')
