@@ -76,7 +76,7 @@ contract('Marketplace', function(accounts){
         assert.equal(result[6], bob, 'the buyer address should be set bob when he purchases an item')
         assert.equal(eventEmitted, true, 'selling an item should emit a Sold event')
         assert.equal(scBalanceAfter, scBalanceBefore + parseInt(price, 10), "owner's balance should be increased by the price of the item")
-        assert.isBelow(bobBalanceAfter, bobBalanceBefore - price, "bob's balance should be reduced by more than the price of the item (including gas costs)")
+        assert.isBelow(bobBalanceAfter, bobBalanceBefore - parseInt(price, 10), "bob's balance should be reduced by more than the price of the item (including gas costs)")
     })
 
     it("should allow the seller to mark the goods as shipped", async() => {
@@ -102,9 +102,36 @@ contract('Marketplace', function(accounts){
 
     it("should allow the buyer to mark the goods as received", async() => {
         const marketplace = await Marketplace.deployed()
+        const smartcontract = await marketplace.getAddress()
 
         var eventEmitted = false
-        
+
+        var event = marketplace.LogReceived()
+        await event.watch((err, res) => {
+            id = res.args.id.toString(10)
+            eventEmitted = true
+        })
+
+        var scBalanceBefore = await web3.eth.getBalance(smartcontract).toNumber()
+        var aliceBalanceBefore = await web3.eth.getBalance(alice).toNumber()
+        console.log('smart contract balance before:' + scBalanceBefore)
+        console.log('alice balance before:' + aliceBalanceBefore)
+
+        await marketplace.receiveGoods(id, {from: bob})
+
+        var scBalanceAfter = await web3.eth.getBalance(smartcontract).toNumber()
+        var aliceBalanceAfter = await web3.eth.getBalance(alice).toNumber()
+        console.log('smart contract balance after:' + scBalanceAfter)
+        console.log('alice balance after:' + aliceBalanceAfter)
+
+        const result = await marketplace.fetchGoods.call(id)
+
+        console.log('id:' + result[0] + ', name:' + result[1] + ', price:' + result[2] + ', ipfspic:' + result[3] + ', status:' + result[4] + ', seller:' + result[5] + ', buyer:' + result[6])
+
+        assert.equal(result[4].toString(10), 3, 'the state of the item should be "Received", which should be declared second in the State Enum')
+        assert.equal(eventEmitted, true, 'receiving an item should emit a Received event')
+        assert.equal(scBalanceAfter, scBalanceBefore - parseInt(price, 10), "owner's balance should be increased by the price of the item")
+        assert.equal(aliceBalanceAfter, aliceBalanceBefore + parseInt(price, 10), "alice's balance should be increase by the price of the item (including gas costs)")
     })
     // Test for failing conditions in this contracts
     // test that every modifier is working
