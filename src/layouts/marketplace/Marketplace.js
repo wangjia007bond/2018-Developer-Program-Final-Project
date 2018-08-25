@@ -4,8 +4,9 @@ import getWeb3 from '../../util/getWeb3'
 import ipfs from '../../util/ipfs'
 
 class Marketplace extends Component {
-  constructor(props) {
+  constructor(props, { authData }) {
     super(props)
+    authData = this.props
     this.state = { 
       marketGoodsList: [],
       purchasedGoodsList: [],

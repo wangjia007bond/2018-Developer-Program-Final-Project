@@ -11,7 +11,7 @@ module.exports = {
       host: "localhost",
       port: 8545,
       network_id: "4", // Rinkeby ID 4
-      from: "0x99a4572656eb49FFEEFbe9588f8e7ab0F8D6Eb5e", // account from which to deploy
+      from: "0x7419dAD1d3C70FD0080a6F5D398d9C3dE0FAf58f", // account from which to deploy
       gas: 6712390
      }
   }
