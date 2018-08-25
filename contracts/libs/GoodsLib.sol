@@ -17,6 +17,38 @@ library GoodsLib {
         address buyer;
     }
 
+    /* For each of the following modifiers, use what you learned about modifiers
+   to give them functionality. For example, the forSale modifier should require
+   that the item with the given id has the status ForSale. */
+    modifier forSale(Goods storage self) { 
+        require(self.status == Status.ForSale); 
+        _; 
+    }
+    modifier sold(Goods storage self) { 
+        require(self.status == Status.Sold); 
+        _;
+    }
+    modifier shipped(Goods storage self) { 
+        require(self.status == Status.Shipped); 
+        _; 
+    }
+    modifier received(Goods storage self) { 
+        require(self.status == Status.Received); 
+        _; 
+    }
+    modifier returned(Goods storage self) { 
+        require(self.status == Status.Return); 
+        _;
+    }
+    modifier rshipped(Goods storage self) { 
+        require(self.status == Status.RShipped); 
+        _;
+    }
+    modifier rreceived(Goods storage self) {
+        require(self.status == Status.RReceived); 
+        _;
+    }
+
     function addGoods(uint _id, string _name, uint _price, string _ipfspic) 
         internal
         view
@@ -29,6 +61,7 @@ library GoodsLib {
     // buy a goods
     function buyGoods(Goods storage self) 
         internal
+        forSale(self)
     {
         self.buyer = msg.sender;
         self.status = Status.Sold;
@@ -37,6 +70,7 @@ library GoodsLib {
     // ship a goods
     function shipGoods(Goods storage self) 
         internal
+        sold(self)
     {
         self.status = Status.Shipped;
     }
@@ -44,6 +78,7 @@ library GoodsLib {
     // received a goods
     function receiveGoods(Goods storage self)
         internal
+        shipped(self)
     {
         self.status = Status.Received;
         self.seller.transfer(self.price);
@@ -51,18 +86,21 @@ library GoodsLib {
 
     function returnedGoods(Goods storage self)
         internal
+        received(self)
     {
         self.status = Status.Return;
     }
 
     function returnShipGoods(Goods storage self) 
         internal
+        returned(self)
     {
         self.status = Status.RShipped;
     }
 
     function returnReceiveGoods(Goods storage self) 
         internal
+        rshipped(self)
     {
         self.status = Status.RReceived;
         self.buyer.transfer(self.price);
@@ -70,6 +108,7 @@ library GoodsLib {
 
     function relistGoods(Goods storage self)
         internal
+        rreceived(self)
     {
         self.status = Status.ForSale;
     }

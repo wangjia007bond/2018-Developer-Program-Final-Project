@@ -7,7 +7,6 @@ import "./libs/GoodsLib.sol";
 contract Marketplace is Destructible, Pausable {
 
     using GoodsLib for GoodsLib.Goods;
-    using GoodsLib for GoodsLib.Status;
 
     // Let's make sure everyone knows who owns the TradeMyUsedStuff Website
     address public owner;
@@ -43,38 +42,6 @@ contract Marketplace is Destructible, Pausable {
         uint amountToRefund = msg.value - _price;
         goodsList[_id].buyer.transfer(amountToRefund);
     }
-    
-    /* For each of the following modifiers, use what you learned about modifiers
-   to give them functionality. For example, the forSale modifier should require
-   that the item with the given id has the status ForSale. */
-    modifier forSale(uint id) { 
-        require(goodsList[id].status == GoodsLib.Status.ForSale); 
-        _; 
-    }
-    modifier sold(uint id) { 
-        require(goodsList[id].status == GoodsLib.Status.Sold); 
-        _;
-    }
-    modifier shipped(uint id) { 
-        require(goodsList[id].status == GoodsLib.Status.Shipped); 
-        _; 
-    }
-    modifier received(uint id) { 
-        require(goodsList[id].status == GoodsLib.Status.Received); 
-        _; 
-    }
-    modifier returned(uint id) { 
-        require(goodsList[id].status == GoodsLib.Status.Return); 
-        _;
-    }
-    modifier rshipped(uint id) { 
-        require(goodsList[id].status == GoodsLib.Status.RShipped); 
-        _;
-    }
-    modifier rreceived(uint id) {
-        require(goodsList[id].status == GoodsLib.Status.RReceived); 
-        _;
-    }
 
     // Constructor, can receive one or many variables here; only one allowed
     constructor() public {
@@ -100,7 +67,6 @@ contract Marketplace is Destructible, Pausable {
     function buyGoods(uint id) 
         public 
         payable
-        forSale(id)
         paidEnough(goodsList[id].price)
         checkValue(id)
         whenNotPaused
@@ -112,7 +78,6 @@ contract Marketplace is Destructible, Pausable {
     // ship a goods
     function shipGoods(uint id) 
         public
-        sold(id)
         verifyCaller(goodsList[id].seller)
         whenNotPaused
     {
@@ -123,7 +88,6 @@ contract Marketplace is Destructible, Pausable {
     // received a goods
     function receiveGoods(uint id)
         public
-        shipped(id)
         verifyCaller(goodsList[id].buyer)
         whenNotPaused
     {
@@ -134,7 +98,6 @@ contract Marketplace is Destructible, Pausable {
     function returnedGoods(uint id)
         public
         payable
-        received(id)
         whenNotPaused
     {
         goodsList[id].returnedGoods();
@@ -143,7 +106,6 @@ contract Marketplace is Destructible, Pausable {
 
     function returnShipGoods(uint id) 
         public
-        returned(id)
         verifyCaller(goodsList[id].seller)
         whenNotPaused
     {
@@ -153,7 +115,6 @@ contract Marketplace is Destructible, Pausable {
 
     function returnReceiveGoods(uint id) 
         public
-        rshipped(id)
         verifyCaller(goodsList[id].seller)   
         whenNotPaused
     {
@@ -163,7 +124,6 @@ contract Marketplace is Destructible, Pausable {
 
     function relistGoods(uint id)
         public
-        rreceived(id)
         verifyCaller(goodsList[id].seller) 
         whenNotPaused
     {
