@@ -1,8 +1,9 @@
 pragma solidity ^0.4.23;
 
 import "./common/Destructible.sol";
+import "./common/Pausable.sol";
 
-contract Marketplace is Destructible {
+contract Marketplace is Destructible, Pausable {
     
     // Let's make sure everyone knows who owns the TradeMyUsedStuff Website
     address public owner;
