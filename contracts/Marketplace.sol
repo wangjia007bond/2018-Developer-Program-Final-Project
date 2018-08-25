@@ -15,14 +15,11 @@ contract Marketplace is Destructible, Pausable {
     // Add a line that creates a public mapping that maps the id to an Goods.
     mapping(uint => GoodsLib.Goods) goodsList;
 
-    // Create 7 events with the same name as each possible State
+    // Create 4 events with the same name as each possible State
     event LogForSale(uint id, uint price);
     event LogSold(uint id, uint price, address buyer);
     event LogShipped(uint id, uint price, address seller);
     event LogReceived(uint id, uint price, address buyer);
-    event LogReturn(uint id, uint price, address buyer);
-    event LogRShipped(uint id, uint price, address buyer);
-    event LogRReceived(uint id, uint price, address seller);
     event LogFetch(uint id, string name, uint price, string ipfspic, uint status, address seller, address buyer);
 
     modifier verifyCaller(address _address) { 
@@ -93,42 +90,6 @@ contract Marketplace is Destructible, Pausable {
     {
         goodsList[id].receiveGoods();
         emit LogReceived(id, goodsList[id].price, goodsList[id].buyer);
-    }
-
-    function returnedGoods(uint id)
-        public
-        payable
-        whenNotPaused
-    {
-        goodsList[id].returnedGoods();
-        emit LogReturn(id, goodsList[id].price, goodsList[id].buyer);
-    }
-
-    function returnShipGoods(uint id) 
-        public
-        verifyCaller(goodsList[id].seller)
-        whenNotPaused
-    {
-        goodsList[id].returnShipGoods();
-        emit LogRShipped(id, goodsList[id].price, goodsList[id].buyer);
-    }
-
-    function returnReceiveGoods(uint id) 
-        public
-        verifyCaller(goodsList[id].seller)   
-        whenNotPaused
-    {
-        goodsList[id].returnReceiveGoods();
-        emit LogRReceived(id, goodsList[id].price, goodsList[id].seller);
-    }
-
-    function relistGoods(uint id)
-        public
-        verifyCaller(goodsList[id].seller) 
-        whenNotPaused
-    {
-        goodsList[id].relistGoods();
-        emit LogForSale(id, goodsList[id].price);
     }
 
     function fetchGoods(uint _id) 
