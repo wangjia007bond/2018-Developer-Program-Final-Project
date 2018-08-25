@@ -70,6 +70,7 @@ class Marketplace extends Component {
         goodsCount = result
         that.setState({ marketGoodsList: [] })
         that.setState({ purchasedGoodsList: [] })
+        that.setState({ownedGoodsList: []})
         for(var i = 0; i < goodsCount; i++) {
           marketplaceInstance.fetchGoods.call(i).then(function(result) {
             const goods = {
@@ -89,6 +90,10 @@ class Marketplace extends Component {
               that.setState({
                 purchasedGoodsList: that.state.purchasedGoodsList.concat(goods)
               })              
+            }
+
+            if(result[5] === account) {
+              ownedGoodsList: that.state.ownedGoodsList.concat(goods)
             }
           })
         }
@@ -207,7 +212,10 @@ class Marketplace extends Component {
         <MarketGoodsList marketGoodsList={this.state.marketGoodsList} />
         <h3>——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————</h3>
         <h3>All goods You have brought:</h3>
-        <MarketGoodsList marketGoodsList={this.state.purchasedGoodsList} />
+        <PurchasedGoodsList purchasedGoodsList={this.state.purchasedGoodsList} />
+        <h3>——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————</h3>
+        <h3>All goods You want to sell:</h3>
+        <OwnedGoodsList ownedGoodsList={this.state.ownedGoodsList} />
       </div>
     )
   }
@@ -297,7 +305,195 @@ class MarketGoodsList extends Component {
                     event.preventDefault() 
                     this.handleBuy(goods.id, goods.price)
                 }}
-              >Buy
+              >Buy Goods
+              </button>
+            </div>
+          ))}
+        </ul>
+      </div>
+    ); 
+  }
+}
+
+class PurchasedGoodsList extends Component {
+
+  constructor(props) {
+    super(props)
+    this.handleReceived = this.handleReceived.bind(this)
+    this.getBalance = this.getBalance.bind(this)
+    this.web3 = null
+  }
+
+  componentDidMount() {
+    getWeb3.then(results => {
+      this.setState({
+        web3: results.web3
+      })
+    })
+    .catch(() => {
+      console.log('Error finding web3.')
+    })
+  }
+    
+  getBalance (address) {
+    var that = this
+    return new Promise(function(resolve, reject) {
+      that.state.web3.eth.getBalance(address, function(error, result) {
+        if(error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
+  }
+
+  handleReceived(id) {
+    var that = this
+
+    console.log(id)
+    const contract = require('truffle-contract')
+    const marketplace = contract(MarketplaceContract)
+    marketplace.setProvider(this.state.web3.currentProvider)
+
+    var marketplaceInstance
+
+    this.state.web3.eth.getAccounts(function(error, accounts) {
+      if(error) {
+        console.log(error)
+      }
+
+      var account = accounts[0]
+      console.log("Duck account address:" + account)
+
+      that.getBalance(account).then(function(balance) {
+
+        var accountBalance = balance.toNumber()
+        marketplace.deployed().then(function(instance) {
+          marketplaceInstance = instance
+    
+          var event = marketplaceInstance.LogReceived()
+          event.watch((err, res) => {
+            id = res.args.id.toString(10)
+            console.log("Received goods successfully, goods id:" + id)
+          })
+          return marketplaceInstance.receiveGoods(id, {from: account})
+        })
+      })
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <ul>
+          {this.props.purchasedGoodsList.map(goods => (
+            <div key={goods.id}>
+              <li>Name: {goods.name}</li>
+              <li>Price: {goods.price}</li>
+              <img src={goods.picture} height="100" width="100"></img>
+              <button
+                type="button"
+                data-id="0"
+                onClick={(event) => {
+                    event.preventDefault() 
+                    this.handleReceived(goods.id)
+                }}
+              >Receive Goods
+              </button>
+            </div>
+          ))}
+        </ul>
+      </div>
+    ); 
+  }
+}
+
+class OwnedGoodsList extends Component {
+
+  constructor(props) {
+    super(props)
+    this.handleDelivery = this.handleDelivery.bind(this)
+    this.getBalance = this.getBalance.bind(this)
+    this.web3 = null
+  }
+
+  componentDidMount() {
+    getWeb3.then(results => {
+      this.setState({
+        web3: results.web3
+      })
+    })
+    .catch(() => {
+      console.log('Error finding web3.')
+    })
+  }
+    
+  getBalance (address) {
+    var that = this
+    return new Promise(function(resolve, reject) {
+      that.state.web3.eth.getBalance(address, function(error, result) {
+        if(error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
+  }
+
+  handleDelivery(id, price) {
+    var that = this
+
+    console.log(id)
+    const contract = require('truffle-contract')
+    const marketplace = contract(MarketplaceContract)
+    marketplace.setProvider(this.state.web3.currentProvider)
+
+    var marketplaceInstance
+
+    this.state.web3.eth.getAccounts(function(error, accounts) {
+      if(error) {
+        console.log(error)
+      }
+
+      var account = accounts[0]
+      console.log("Duck account address:" + account)
+
+      that.getBalance(account).then(function(balance) {
+
+        var accountBalance = balance.toNumber()
+        marketplace.deployed().then(function(instance) {
+          marketplaceInstance = instance
+    
+          var event = marketplaceInstance.LogSold()
+          event.watch((err, res) => {
+            id = res.args.id.toString(10)
+            console.log("Delivery goods successfully, goods id:" + id)
+          })
+          return marketplaceInstance.shipGoods(id, {from: account})
+        })
+      })
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <ul>
+          {this.props.ownedGoodsList.map(goods => (
+            <div key={goods.id}>
+              <li>Name: {goods.name}</li>
+              <li>Price: {goods.price}</li>
+              <img src={goods.picture} height="100" width="100"></img>
+              <button
+                type="button"
+                data-id="0"
+                onClick={(event) => {
+                    event.preventDefault() 
+                    this.handleDelivery(goods.id)
+                }}
+              >Delivery Goods
               </button>
             </div>
           ))}
