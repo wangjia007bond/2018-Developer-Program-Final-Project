@@ -104,6 +104,7 @@ contract Marketplace is Destructible, Pausable {
 
     function addGoods(string _name, uint _price, string _ipfspic) 
         public
+        whenNotPaused
         returns (uint)
     {
         uint _id = goodsCount;
@@ -120,6 +121,7 @@ contract Marketplace is Destructible, Pausable {
         forSale(id)
         paidEnough(goods[id].price)
         checkValue(id)
+        whenNotPaused
     {
         goods[id].buyer = msg.sender;
         goods[id].status = Status.Sold;
@@ -131,6 +133,7 @@ contract Marketplace is Destructible, Pausable {
         public
         sold(id)
         verifyCaller(goods[id].seller)
+        whenNotPaused
     {
         goods[id].status = Status.Shipped;
         emit LogShipped(id, goods[id].price, goods[id].seller);
@@ -141,6 +144,7 @@ contract Marketplace is Destructible, Pausable {
         public
         shipped(id)
         verifyCaller(goods[id].buyer)
+        whenNotPaused
     {
         goods[id].status = Status.Received;
         goods[id].seller.transfer(goods[id].price);
@@ -151,6 +155,7 @@ contract Marketplace is Destructible, Pausable {
         public
         payable
         received(id)
+        whenNotPaused
     {
         goods[id].status = Status.Return;
         emit LogReturn(id, goods[id].price, goods[id].buyer);
@@ -160,6 +165,7 @@ contract Marketplace is Destructible, Pausable {
         public
         returned(id)
         verifyCaller(goods[id].seller)
+        whenNotPaused
     {
         goods[id].status = Status.RShipped;
         emit LogRShipped(id, goods[id].price, goods[id].buyer);
@@ -169,6 +175,7 @@ contract Marketplace is Destructible, Pausable {
         public
         rshipped(id)
         verifyCaller(goods[id].seller)   
+        whenNotPaused
     {
         goods[id].status = Status.RReceived;
         goods[id].buyer.transfer(goods[id].price);
@@ -179,15 +186,17 @@ contract Marketplace is Destructible, Pausable {
         public
         rreceived(id)
         verifyCaller(goods[id].seller) 
+        whenNotPaused
     {
         goods[id].status = Status.ForSale;
         emit LogForSale(id, goods[id].price);
     }
 
     function fetchGoods(uint _id) 
-    public 
-    view 
-    returns (uint id, string name, uint price, string ipfspic, uint state, address seller, address buyer) 
+        public 
+        view 
+        whenNotPaused
+        returns (uint id, string name, uint price, string ipfspic, uint state, address seller, address buyer) 
     {
         id = goods[_id].id; 
         name = goods[_id].name;
@@ -201,11 +210,23 @@ contract Marketplace is Destructible, Pausable {
         return (id, name, price, ipfspic, state, seller, buyer);
     }
 
-    function checkBalance() public view returns(uint) {
+    function checkBalance() 
+        public 
+        view 
+        onlyOwner
+        whenNotPaused
+        returns(uint) 
+    {
         return address(this).balance;
     }
 
-    function getAddress() public view returns(address) {
+    function getAddress() 
+        public 
+        view
+        onlyOwner
+        whenNotPaused
+        returns(address) 
+    {
         return address(this);
     }
 }
