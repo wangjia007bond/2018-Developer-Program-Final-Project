@@ -20,7 +20,7 @@ ReactDOM.render((
     <Provider store={store}>
       <Router history={history}>
         <Route path="/" component={App}>
-          <IndexRoute component={Home} />
+          <IndexRoute component={Marketplace} />
           <Route path="marketplace" component={UserIsAuthenticated(Marketplace)} />
           <Route path="profile" component={UserIsAuthenticated(Profile)} />
         </Route>
