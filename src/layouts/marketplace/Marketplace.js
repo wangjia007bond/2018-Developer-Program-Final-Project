@@ -71,7 +71,7 @@ class Marketplace extends Component {
         goodsCount = result
         that.setState({ marketGoodsList: [] })
         that.setState({ purchasedGoodsList: [] })
-        that.setState({ownedGoodsList: []})
+        that.setState({ ownedGoodsList: [] })
         for(var i = 0; i < goodsCount; i++) {
           marketplaceInstance.fetchGoods.call(i).then(function(result) {
             const goods = {
@@ -94,7 +94,9 @@ class Marketplace extends Component {
             }
 
             if(result[5] === account) {
-              ownedGoodsList: that.state.ownedGoodsList.concat(goods)
+              that.setState({
+                ownedGoodsList: that.state.ownedGoodsList.concat(goods)
+              }) 
             }
           })
         }
