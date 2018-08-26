@@ -3,3 +3,6 @@
 
 # Destructible
 - Base contract that can be destroyed by owner. All funds in contract will be sent to the owner.
+
+# Pausable
+- Add an option to disable critical contract functionality in case of an emergency.

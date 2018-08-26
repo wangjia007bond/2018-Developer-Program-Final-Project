@@ -1,5 +1,7 @@
 var Marketplace = artifacts.require('Marketplace')
 
+/* These unit tests try to test all the functionality in Marketplace
+ */
 contract('Marketplace', function(accounts){
     const owner = accounts[0]
     const alice = accounts[1]

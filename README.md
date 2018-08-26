@@ -1,7 +1,7 @@
 # 2018-Developer-Program-Final-Project
 
 ## TradeMyUsedStuff
-The best online marketplace to buy and sell used stuff, you can uplist your used goods and buy goods which in the website.
+The best online marketplace to buy and sell used stuff, you can uplist your used goods and buy goods which are in the website.
 
 ### Flow Chart
 ![flowchart][flowchart]
@@ -18,10 +18,18 @@ The best online marketplace to buy and sell used stuff, you can uplist your used
     ```
     $ npm install -g truffle
     ```
+1.  Install [IPFS](https://ipfs.io/docs/install/), and run the following command
+    ```
+    ipfs init
+    ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://infurarocks.com"]'
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+    ```
+
 
 ## Deploy Solution
 
-- Start Ganache
+- Start Ganache in port 7545
 - Clone project to your compute under a empty folder
     ```
     git clone https://github.com/wangjia007bond/2018-Developer-Program-Final-Project.git
@@ -36,5 +44,15 @@ The best online marketplace to buy and sell used stuff, you can uplist your used
     ```
     npm run start
     ```
+
+## Play with Solution
+
+* To up list a used goods
+
+* To buy a used goods
+
+* To Delivery a used goods
+
+* To Receive a used goods
 
 [flowchart]: README-resources/marketplace.png
