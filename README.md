@@ -47,12 +47,24 @@ The best online marketplace to buy and sell used stuff, you can uplist your used
 
 ## Play with Solution
 
-* To up list a used goods
+* To login
+![login][login]
+
+* To add a used goods
+![add][add]
 
 * To buy a used goods
+![buy][buy]
 
 * To Delivery a used goods
+![delivery][delivery]
 
 * To Receive a used goods
+![receive][receive]
 
 [flowchart]: README-resources/marketplace.png
+[login]: README-resources/login.png
+[add]: README-resources/add-goods.png
+[buy]: README-resources/buy-goods.png
+[delivery]: README-resources/delivery-goods.png
+[receive]: README-resources/delivery-goods.png
