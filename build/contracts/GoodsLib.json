@@ -1,0 +1,4293 @@
+{
+  "contractName": "GoodsLib",
+  "abi": [],
+  "bytecode": "0x604c602c600b82828239805160001a60731460008114601c57601e565bfe5b5030600052607381538281f30073000000000000000000000000000000000000000030146080604052600080fd00a165627a7a723058202c64fc7156eac328429e44041f0f8e08941e7cdae3c8b6bee2b789e1e69e853e0029",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fd00a165627a7a723058202c64fc7156eac328429e44041f0f8e08941e7cdae3c8b6bee2b789e1e69e853e0029",
+  "sourceMap": "25:1979:5:-;;132:2:-1;166:7;155:9;146:7;137:37;252:7;246:14;243:1;238:23;232:4;229:33;270:1;265:20;;;;222:63;;265:20;274:9;222:63;;298:9;295:1;288:20;328:4;319:7;311:22;352:7;343;336:24",
+  "deployedSourceMap": "25:1979:5:-;;;;;;;;",
+  "source": "pragma solidity 0.4.24;\n\nlibrary GoodsLib {\n\n    /* Create a enum named status for goods, \n    contain ForSale, Sold, Shipped, Received */\n    enum Status { ForSale, Sold, Shipped, Received }\n\n    // Create a struct named Goods, contain id, name, price, state, seller, and buyer\n    struct Goods {\n        uint id;\n        string name;\n        uint price;\n        string ipfspic;\n        Status status;\n        address seller;\n        address buyer;\n    }\n\n    /* For each of the following modifiers, use what you learned about modifiers\n   to give them functionality. For example, the forSale modifier should require\n   that the item with the given id has the status ForSale. */\n    modifier forSale(Goods storage self) { \n        require(self.status == Status.ForSale); \n        _; \n    }\n    modifier sold(Goods storage self) { \n        require(self.status == Status.Sold); \n        _;\n    }\n    modifier shipped(Goods storage self) { \n        require(self.status == Status.Shipped); \n        _; \n    }\n    modifier received(Goods storage self) { \n        require(self.status == Status.Received); \n        _; \n    }\n\n    function addGoods(uint _id, string _name, uint _price, string _ipfspic) \n        internal\n        view\n        returns(Goods)\n    {\n        require(_price > 0, \"Price must be positive and different than 0!\");\n        return Goods({id:_id, name:_name, price:_price, ipfspic:_ipfspic, status:Status.ForSale, seller:msg.sender, buyer:0});\n    }\n\n    // buy a goods\n    function buyGoods(Goods storage self) \n        internal\n        forSale(self)\n    {\n        self.buyer = msg.sender;\n        self.status = Status.Sold;\n    }\n\n    // ship a goods\n    function shipGoods(Goods storage self) \n        internal\n        sold(self)\n    {\n        self.status = Status.Shipped;\n    }\n\n    // received a goods\n    function receiveGoods(Goods storage self)\n        internal\n        shipped(self)\n    {\n        self.status = Status.Received;\n        self.seller.transfer(self.price);\n    }\n\n}",
+  "sourcePath": "/Users/swang5/Projects/Blockchain/2018-Developer-Program-Final-Project/contracts/libs/GoodsLib.sol",
+  "ast": {
+    "absolutePath": "/Users/swang5/Projects/Blockchain/2018-Developer-Program-Final-Project/contracts/libs/GoodsLib.sol",
+    "exportedSymbols": {
+      "GoodsLib": [
+        802
+      ]
+    },
+    "id": 803,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 628,
+        "literals": [
+          "solidity",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:5"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "library",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 802,
+        "linearizedBaseContracts": [
+          802
+        ],
+        "name": "GoodsLib",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "GoodsLib.Status",
+            "id": 633,
+            "members": [
+              {
+                "id": 629,
+                "name": "ForSale",
+                "nodeType": "EnumValue",
+                "src": "157:7:5"
+              },
+              {
+                "id": 630,
+                "name": "Sold",
+                "nodeType": "EnumValue",
+                "src": "166:4:5"
+              },
+              {
+                "id": 631,
+                "name": "Shipped",
+                "nodeType": "EnumValue",
+                "src": "172:7:5"
+              },
+              {
+                "id": 632,
+                "name": "Received",
+                "nodeType": "EnumValue",
+                "src": "181:8:5"
+              }
+            ],
+            "name": "Status",
+            "nodeType": "EnumDefinition",
+            "src": "143:48:5"
+          },
+          {
+            "canonicalName": "GoodsLib.Goods",
+            "id": 648,
+            "members": [
+              {
+                "constant": false,
+                "id": 635,
+                "name": "id",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "306:7:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 634,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "306:4:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 637,
+                "name": "name",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "323:11:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 636,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "323:6:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 639,
+                "name": "price",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "344:10:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 638,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "344:4:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 641,
+                "name": "ipfspic",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "364:14:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 640,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "364:6:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 643,
+                "name": "status",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "388:13:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_Status_$633",
+                  "typeString": "enum GoodsLib.Status"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 642,
+                  "name": "Status",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 633,
+                  "src": "388:6:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_Status_$633",
+                    "typeString": "enum GoodsLib.Status"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 645,
+                "name": "seller",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "411:14:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 644,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "411:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 647,
+                "name": "buyer",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "435:13:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 646,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "435:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Goods",
+            "nodeType": "StructDefinition",
+            "scope": 802,
+            "src": "283:172:5",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 661,
+              "nodeType": "Block",
+              "src": "721:69:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 657,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 653,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 650,
+                            "src": "740:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 654,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "740:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 655,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "755:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 656,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "ForSale",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "755:14:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "740:29:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 652,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "732:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 658,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "732:38:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 659,
+                  "nodeType": "ExpressionStatement",
+                  "src": "732:38:5"
+                },
+                {
+                  "id": 660,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "781:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 662,
+            "name": "forSale",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 651,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 650,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 662,
+                  "src": "701:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 649,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "701:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "700:20:5"
+            },
+            "src": "684:106:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 675,
+              "nodeType": "Block",
+              "src": "829:65:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 671,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 667,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 664,
+                            "src": "848:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 668,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "848:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 669,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "863:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 670,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "Sold",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "863:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "848:26:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 666,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "840:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 672,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "840:35:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 673,
+                  "nodeType": "ExpressionStatement",
+                  "src": "840:35:5"
+                },
+                {
+                  "id": 674,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "886:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 676,
+            "name": "sold",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 665,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 664,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 676,
+                  "src": "809:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 663,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "809:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "808:20:5"
+            },
+            "src": "795:99:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 689,
+              "nodeType": "Block",
+              "src": "936:69:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 685,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 681,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 678,
+                            "src": "955:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 682,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "955:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 683,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "970:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 684,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "Shipped",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "970:14:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "955:29:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 680,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "947:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 686,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "947:38:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 687,
+                  "nodeType": "ExpressionStatement",
+                  "src": "947:38:5"
+                },
+                {
+                  "id": 688,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "996:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 690,
+            "name": "shipped",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 679,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 678,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 690,
+                  "src": "916:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 677,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "916:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "915:20:5"
+            },
+            "src": "899:106:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 703,
+              "nodeType": "Block",
+              "src": "1048:70:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 699,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 695,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 692,
+                            "src": "1067:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 696,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "1067:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 697,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "1082:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 698,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "Received",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "1082:15:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "1067:30:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 694,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "1059:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 700,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1059:39:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 701,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1059:39:5"
+                },
+                {
+                  "id": 702,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "1109:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 704,
+            "name": "received",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 693,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 692,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 704,
+                  "src": "1028:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 691,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1028:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1027:20:5"
+            },
+            "src": "1010:108:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 736,
+              "nodeType": "Block",
+              "src": "1254:211:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "id": 720,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "id": 718,
+                          "name": "_price",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 710,
+                          "src": "1272:6:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": ">",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "hexValue": "30",
+                          "id": 719,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1281:1:5",
+                          "subdenomination": null,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_0_by_1",
+                            "typeString": "int_const 0"
+                          },
+                          "value": "0"
+                        },
+                        "src": "1272:10:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "5072696365206d75737420626520706f73697469766520616e6420646966666572656e74207468616e203021",
+                        "id": 721,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1284:46:5",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_eddf474445b2d278ba8cc2b943ea70daaa714ccf2782102ee812b9f60398167b",
+                          "typeString": "literal_string \"Price must be positive and different than 0!\""
+                        },
+                        "value": "Price must be positive and different than 0!"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_eddf474445b2d278ba8cc2b943ea70daaa714ccf2782102ee812b9f60398167b",
+                          "typeString": "literal_string \"Price must be positive and different than 0!\""
+                        }
+                      ],
+                      "id": 717,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 821,
+                      "src": "1264:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 722,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1264:67:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 723,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1264:67:5"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 725,
+                        "name": "_id",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 706,
+                        "src": "1358:3:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 726,
+                        "name": "_name",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 708,
+                        "src": "1368:5:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 727,
+                        "name": "_price",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 710,
+                        "src": "1381:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 728,
+                        "name": "_ipfspic",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 712,
+                        "src": "1397:8:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 729,
+                          "name": "Status",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 633,
+                          "src": "1414:6:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                            "typeString": "type(enum GoodsLib.Status)"
+                          }
+                        },
+                        "id": 730,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "lValueRequested": false,
+                        "memberName": "ForSale",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1414:14:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 731,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 817,
+                          "src": "1437:3:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 732,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1437:10:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "30",
+                        "id": 733,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1455:1:5",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        },
+                        "value": "0"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": null,
+                      "id": 724,
+                      "name": "Goods",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 648,
+                      "src": "1348:5:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_Goods_$648_storage_ptr_$",
+                        "typeString": "type(struct GoodsLib.Goods storage pointer)"
+                      }
+                    },
+                    "id": 734,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "names": [
+                      "id",
+                      "name",
+                      "price",
+                      "ipfspic",
+                      "status",
+                      "seller",
+                      "buyer"
+                    ],
+                    "nodeType": "FunctionCall",
+                    "src": "1348:110:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_memory",
+                      "typeString": "struct GoodsLib.Goods memory"
+                    }
+                  },
+                  "functionReturnParameters": 716,
+                  "id": 735,
+                  "nodeType": "Return",
+                  "src": "1341:117:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 737,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "addGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 713,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 706,
+                  "name": "_id",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1142:8:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 705,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1142:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 708,
+                  "name": "_name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1152:12:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 707,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1152:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 710,
+                  "name": "_price",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1166:11:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 709,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1166:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 712,
+                  "name": "_ipfspic",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1179:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 711,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1179:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1141:54:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 716,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 715,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1243:5:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_memory_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 714,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1243:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1242:7:5"
+            },
+            "scope": 802,
+            "src": "1124:341:5",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 759,
+              "nodeType": "Block",
+              "src": "1572:75:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 750,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 745,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 739,
+                        "src": "1582:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 747,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "buyer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 647,
+                      "src": "1582:10:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 748,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 817,
+                        "src": "1595:3:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 749,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1595:10:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "1582:23:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 751,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1582:23:5"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 757,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 752,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 739,
+                        "src": "1615:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 754,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "status",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 643,
+                      "src": "1615:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 755,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 633,
+                        "src": "1629:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                          "typeString": "type(enum GoodsLib.Status)"
+                        }
+                      },
+                      "id": 756,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "Sold",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1629:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "src": "1615:25:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$633",
+                      "typeString": "enum GoodsLib.Status"
+                    }
+                  },
+                  "id": 758,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1615:25:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 760,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 742,
+                    "name": "self",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 739,
+                    "src": "1562:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods storage pointer"
+                    }
+                  }
+                ],
+                "id": 743,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 741,
+                  "name": "forSale",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 662,
+                  "src": "1554:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_struct$_Goods_$648_storage_ptr_$",
+                    "typeString": "modifier (struct GoodsLib.Goods storage pointer)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1554:13:5"
+              }
+            ],
+            "name": "buyGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 740,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 739,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 760,
+                  "src": "1508:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 738,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1508:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1507:20:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 744,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1572:0:5"
+            },
+            "scope": 802,
+            "src": "1490:157:5",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 775,
+              "nodeType": "Block",
+              "src": "1753:45:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 773,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 768,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 762,
+                        "src": "1763:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 770,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "status",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 643,
+                      "src": "1763:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 771,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 633,
+                        "src": "1777:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                          "typeString": "type(enum GoodsLib.Status)"
+                        }
+                      },
+                      "id": 772,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "Shipped",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1777:14:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "src": "1763:28:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$633",
+                      "typeString": "enum GoodsLib.Status"
+                    }
+                  },
+                  "id": 774,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1763:28:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 776,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 765,
+                    "name": "self",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 762,
+                    "src": "1743:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods storage pointer"
+                    }
+                  }
+                ],
+                "id": 766,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 764,
+                  "name": "sold",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 676,
+                  "src": "1738:4:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_struct$_Goods_$648_storage_ptr_$",
+                    "typeString": "modifier (struct GoodsLib.Goods storage pointer)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1738:10:5"
+              }
+            ],
+            "name": "shipGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 763,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 762,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 776,
+                  "src": "1692:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 761,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1692:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1691:20:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 767,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1753:0:5"
+            },
+            "scope": 802,
+            "src": "1673:125:5",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 800,
+              "nodeType": "Block",
+              "src": "1913:88:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 789,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 784,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 778,
+                        "src": "1923:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 786,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "status",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 643,
+                      "src": "1923:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 787,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 633,
+                        "src": "1937:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                          "typeString": "type(enum GoodsLib.Status)"
+                        }
+                      },
+                      "id": 788,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "Received",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1937:15:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "src": "1923:29:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$633",
+                      "typeString": "enum GoodsLib.Status"
+                    }
+                  },
+                  "id": 790,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1923:29:5"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 796,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 778,
+                          "src": "1983:4:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                            "typeString": "struct GoodsLib.Goods storage pointer"
+                          }
+                        },
+                        "id": 797,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "price",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 639,
+                        "src": "1983:10:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 791,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 778,
+                          "src": "1962:4:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                            "typeString": "struct GoodsLib.Goods storage pointer"
+                          }
+                        },
+                        "id": 794,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "seller",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 645,
+                        "src": "1962:11:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      "id": 795,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "transfer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1962:20:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_transfer_nonpayable$_t_uint256_$returns$__$",
+                        "typeString": "function (uint256)"
+                      }
+                    },
+                    "id": 798,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1962:32:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 799,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1962:32:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 801,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 781,
+                    "name": "self",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 778,
+                    "src": "1903:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods storage pointer"
+                    }
+                  }
+                ],
+                "id": 782,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 780,
+                  "name": "shipped",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 690,
+                  "src": "1895:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_struct$_Goods_$648_storage_ptr_$",
+                    "typeString": "modifier (struct GoodsLib.Goods storage pointer)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1895:13:5"
+              }
+            ],
+            "name": "receiveGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 779,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 778,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 801,
+                  "src": "1850:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 777,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1850:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1849:20:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 783,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1913:0:5"
+            },
+            "scope": 802,
+            "src": "1828:173:5",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 803,
+        "src": "25:1979:5"
+      }
+    ],
+    "src": "0:2004:5"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/swang5/Projects/Blockchain/2018-Developer-Program-Final-Project/contracts/libs/GoodsLib.sol",
+    "exportedSymbols": {
+      "GoodsLib": [
+        802
+      ]
+    },
+    "id": 803,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 628,
+        "literals": [
+          "solidity",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:5"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "library",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 802,
+        "linearizedBaseContracts": [
+          802
+        ],
+        "name": "GoodsLib",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "GoodsLib.Status",
+            "id": 633,
+            "members": [
+              {
+                "id": 629,
+                "name": "ForSale",
+                "nodeType": "EnumValue",
+                "src": "157:7:5"
+              },
+              {
+                "id": 630,
+                "name": "Sold",
+                "nodeType": "EnumValue",
+                "src": "166:4:5"
+              },
+              {
+                "id": 631,
+                "name": "Shipped",
+                "nodeType": "EnumValue",
+                "src": "172:7:5"
+              },
+              {
+                "id": 632,
+                "name": "Received",
+                "nodeType": "EnumValue",
+                "src": "181:8:5"
+              }
+            ],
+            "name": "Status",
+            "nodeType": "EnumDefinition",
+            "src": "143:48:5"
+          },
+          {
+            "canonicalName": "GoodsLib.Goods",
+            "id": 648,
+            "members": [
+              {
+                "constant": false,
+                "id": 635,
+                "name": "id",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "306:7:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 634,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "306:4:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 637,
+                "name": "name",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "323:11:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 636,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "323:6:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 639,
+                "name": "price",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "344:10:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 638,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "344:4:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 641,
+                "name": "ipfspic",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "364:14:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 640,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "364:6:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 643,
+                "name": "status",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "388:13:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_Status_$633",
+                  "typeString": "enum GoodsLib.Status"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 642,
+                  "name": "Status",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 633,
+                  "src": "388:6:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_Status_$633",
+                    "typeString": "enum GoodsLib.Status"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 645,
+                "name": "seller",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "411:14:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 644,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "411:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 647,
+                "name": "buyer",
+                "nodeType": "VariableDeclaration",
+                "scope": 648,
+                "src": "435:13:5",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 646,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "435:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Goods",
+            "nodeType": "StructDefinition",
+            "scope": 802,
+            "src": "283:172:5",
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 661,
+              "nodeType": "Block",
+              "src": "721:69:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 657,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 653,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 650,
+                            "src": "740:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 654,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "740:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 655,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "755:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 656,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "ForSale",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "755:14:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "740:29:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 652,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "732:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 658,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "732:38:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 659,
+                  "nodeType": "ExpressionStatement",
+                  "src": "732:38:5"
+                },
+                {
+                  "id": 660,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "781:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 662,
+            "name": "forSale",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 651,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 650,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 662,
+                  "src": "701:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 649,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "701:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "700:20:5"
+            },
+            "src": "684:106:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 675,
+              "nodeType": "Block",
+              "src": "829:65:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 671,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 667,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 664,
+                            "src": "848:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 668,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "848:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 669,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "863:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 670,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "Sold",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "863:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "848:26:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 666,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "840:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 672,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "840:35:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 673,
+                  "nodeType": "ExpressionStatement",
+                  "src": "840:35:5"
+                },
+                {
+                  "id": 674,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "886:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 676,
+            "name": "sold",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 665,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 664,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 676,
+                  "src": "809:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 663,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "809:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "808:20:5"
+            },
+            "src": "795:99:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 689,
+              "nodeType": "Block",
+              "src": "936:69:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 685,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 681,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 678,
+                            "src": "955:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 682,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "955:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 683,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "970:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 684,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "Shipped",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "970:14:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "955:29:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 680,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "947:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 686,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "947:38:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 687,
+                  "nodeType": "ExpressionStatement",
+                  "src": "947:38:5"
+                },
+                {
+                  "id": 688,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "996:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 690,
+            "name": "shipped",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 679,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 678,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 690,
+                  "src": "916:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 677,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "916:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "915:20:5"
+            },
+            "src": "899:106:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 703,
+              "nodeType": "Block",
+              "src": "1048:70:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        },
+                        "id": 699,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 695,
+                            "name": "self",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 692,
+                            "src": "1067:4:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                              "typeString": "struct GoodsLib.Goods storage pointer"
+                            }
+                          },
+                          "id": 696,
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "status",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 643,
+                          "src": "1067:11:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 697,
+                            "name": "Status",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 633,
+                            "src": "1082:6:5",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                              "typeString": "type(enum GoodsLib.Status)"
+                            }
+                          },
+                          "id": 698,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "Received",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "1082:15:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_enum$_Status_$633",
+                            "typeString": "enum GoodsLib.Status"
+                          }
+                        },
+                        "src": "1067:30:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      ],
+                      "id": 694,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 820,
+                      "src": "1059:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                        "typeString": "function (bool) pure"
+                      }
+                    },
+                    "id": 700,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1059:39:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 701,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1059:39:5"
+                },
+                {
+                  "id": 702,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "1109:1:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 704,
+            "name": "received",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 693,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 692,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 704,
+                  "src": "1028:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 691,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1028:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1027:20:5"
+            },
+            "src": "1010:108:5",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 736,
+              "nodeType": "Block",
+              "src": "1254:211:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "id": 720,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "id": 718,
+                          "name": "_price",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 710,
+                          "src": "1272:6:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": ">",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "hexValue": "30",
+                          "id": 719,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "number",
+                          "lValueRequested": false,
+                          "nodeType": "Literal",
+                          "src": "1281:1:5",
+                          "subdenomination": null,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_rational_0_by_1",
+                            "typeString": "int_const 0"
+                          },
+                          "value": "0"
+                        },
+                        "src": "1272:10:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "5072696365206d75737420626520706f73697469766520616e6420646966666572656e74207468616e203021",
+                        "id": 721,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1284:46:5",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_eddf474445b2d278ba8cc2b943ea70daaa714ccf2782102ee812b9f60398167b",
+                          "typeString": "literal_string \"Price must be positive and different than 0!\""
+                        },
+                        "value": "Price must be positive and different than 0!"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_eddf474445b2d278ba8cc2b943ea70daaa714ccf2782102ee812b9f60398167b",
+                          "typeString": "literal_string \"Price must be positive and different than 0!\""
+                        }
+                      ],
+                      "id": 717,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        820,
+                        821
+                      ],
+                      "referencedDeclaration": 821,
+                      "src": "1264:7:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 722,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1264:67:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 723,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1264:67:5"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 725,
+                        "name": "_id",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 706,
+                        "src": "1358:3:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 726,
+                        "name": "_name",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 708,
+                        "src": "1368:5:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 727,
+                        "name": "_price",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 710,
+                        "src": "1381:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 728,
+                        "name": "_ipfspic",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 712,
+                        "src": "1397:8:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 729,
+                          "name": "Status",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 633,
+                          "src": "1414:6:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                            "typeString": "type(enum GoodsLib.Status)"
+                          }
+                        },
+                        "id": 730,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "lValueRequested": false,
+                        "memberName": "ForSale",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1414:14:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_enum$_Status_$633",
+                          "typeString": "enum GoodsLib.Status"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 731,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 817,
+                          "src": "1437:3:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 732,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1437:10:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "30",
+                        "id": 733,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1455:1:5",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        },
+                        "value": "0"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": null,
+                      "id": 724,
+                      "name": "Goods",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 648,
+                      "src": "1348:5:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_type$_t_struct$_Goods_$648_storage_ptr_$",
+                        "typeString": "type(struct GoodsLib.Goods storage pointer)"
+                      }
+                    },
+                    "id": 734,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "structConstructorCall",
+                    "lValueRequested": false,
+                    "names": [
+                      "id",
+                      "name",
+                      "price",
+                      "ipfspic",
+                      "status",
+                      "seller",
+                      "buyer"
+                    ],
+                    "nodeType": "FunctionCall",
+                    "src": "1348:110:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_memory",
+                      "typeString": "struct GoodsLib.Goods memory"
+                    }
+                  },
+                  "functionReturnParameters": 716,
+                  "id": 735,
+                  "nodeType": "Return",
+                  "src": "1341:117:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 737,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "addGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 713,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 706,
+                  "name": "_id",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1142:8:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 705,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1142:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 708,
+                  "name": "_name",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1152:12:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 707,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1152:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 710,
+                  "name": "_price",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1166:11:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 709,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1166:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 712,
+                  "name": "_ipfspic",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1179:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 711,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1179:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1141:54:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 716,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 715,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 737,
+                  "src": "1243:5:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_memory_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 714,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1243:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1242:7:5"
+            },
+            "scope": 802,
+            "src": "1124:341:5",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 759,
+              "nodeType": "Block",
+              "src": "1572:75:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 750,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 745,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 739,
+                        "src": "1582:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 747,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "buyer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 647,
+                      "src": "1582:10:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 748,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 817,
+                        "src": "1595:3:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 749,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1595:10:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "1582:23:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 751,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1582:23:5"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 757,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 752,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 739,
+                        "src": "1615:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 754,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "status",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 643,
+                      "src": "1615:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 755,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 633,
+                        "src": "1629:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                          "typeString": "type(enum GoodsLib.Status)"
+                        }
+                      },
+                      "id": 756,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "Sold",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1629:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "src": "1615:25:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$633",
+                      "typeString": "enum GoodsLib.Status"
+                    }
+                  },
+                  "id": 758,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1615:25:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 760,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 742,
+                    "name": "self",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 739,
+                    "src": "1562:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods storage pointer"
+                    }
+                  }
+                ],
+                "id": 743,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 741,
+                  "name": "forSale",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 662,
+                  "src": "1554:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_struct$_Goods_$648_storage_ptr_$",
+                    "typeString": "modifier (struct GoodsLib.Goods storage pointer)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1554:13:5"
+              }
+            ],
+            "name": "buyGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 740,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 739,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 760,
+                  "src": "1508:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 738,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1508:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1507:20:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 744,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1572:0:5"
+            },
+            "scope": 802,
+            "src": "1490:157:5",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 775,
+              "nodeType": "Block",
+              "src": "1753:45:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 773,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 768,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 762,
+                        "src": "1763:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 770,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "status",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 643,
+                      "src": "1763:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 771,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 633,
+                        "src": "1777:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                          "typeString": "type(enum GoodsLib.Status)"
+                        }
+                      },
+                      "id": 772,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "Shipped",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1777:14:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "src": "1763:28:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$633",
+                      "typeString": "enum GoodsLib.Status"
+                    }
+                  },
+                  "id": 774,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1763:28:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 776,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 765,
+                    "name": "self",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 762,
+                    "src": "1743:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods storage pointer"
+                    }
+                  }
+                ],
+                "id": 766,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 764,
+                  "name": "sold",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 676,
+                  "src": "1738:4:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_struct$_Goods_$648_storage_ptr_$",
+                    "typeString": "modifier (struct GoodsLib.Goods storage pointer)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1738:10:5"
+              }
+            ],
+            "name": "shipGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 763,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 762,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 776,
+                  "src": "1692:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 761,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1692:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1691:20:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 767,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1753:0:5"
+            },
+            "scope": 802,
+            "src": "1673:125:5",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 800,
+              "nodeType": "Block",
+              "src": "1913:88:5",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 789,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 784,
+                        "name": "self",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 778,
+                        "src": "1923:4:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                          "typeString": "struct GoodsLib.Goods storage pointer"
+                        }
+                      },
+                      "id": 786,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "status",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 643,
+                      "src": "1923:11:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 787,
+                        "name": "Status",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 633,
+                        "src": "1937:6:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_enum$_Status_$633_$",
+                          "typeString": "type(enum GoodsLib.Status)"
+                        }
+                      },
+                      "id": 788,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "memberName": "Received",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1937:15:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_enum$_Status_$633",
+                        "typeString": "enum GoodsLib.Status"
+                      }
+                    },
+                    "src": "1923:29:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_Status_$633",
+                      "typeString": "enum GoodsLib.Status"
+                    }
+                  },
+                  "id": 790,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1923:29:5"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 796,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 778,
+                          "src": "1983:4:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                            "typeString": "struct GoodsLib.Goods storage pointer"
+                          }
+                        },
+                        "id": 797,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "price",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 639,
+                        "src": "1983:10:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 791,
+                          "name": "self",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 778,
+                          "src": "1962:4:5",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                            "typeString": "struct GoodsLib.Goods storage pointer"
+                          }
+                        },
+                        "id": 794,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "seller",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 645,
+                        "src": "1962:11:5",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      "id": 795,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "transfer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1962:20:5",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_transfer_nonpayable$_t_uint256_$returns$__$",
+                        "typeString": "function (uint256)"
+                      }
+                    },
+                    "id": 798,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1962:32:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 799,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1962:32:5"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 801,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 781,
+                    "name": "self",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 778,
+                    "src": "1903:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods storage pointer"
+                    }
+                  }
+                ],
+                "id": 782,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 780,
+                  "name": "shipped",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 690,
+                  "src": "1895:7:5",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_struct$_Goods_$648_storage_ptr_$",
+                    "typeString": "modifier (struct GoodsLib.Goods storage pointer)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1895:13:5"
+              }
+            ],
+            "name": "receiveGoods",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 779,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 778,
+                  "name": "self",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 801,
+                  "src": "1850:18:5",
+                  "stateVariable": false,
+                  "storageLocation": "storage",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                    "typeString": "struct GoodsLib.Goods"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 777,
+                    "name": "Goods",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 648,
+                    "src": "1850:5:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Goods_$648_storage_ptr",
+                      "typeString": "struct GoodsLib.Goods"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1849:20:5"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 783,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1913:0:5"
+            },
+            "scope": 802,
+            "src": "1828:173:5",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 803,
+        "src": "25:1979:5"
+      }
+    ],
+    "src": "0:2004:5"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-09-02T11:50:18.480Z"
+}
