@@ -2,6 +2,7 @@
 
 ## TradeMyUsedStuff
 The best online marketplace to buy and sell used stuff, you can uplist your used goods and buy goods which are in the website.
+to play with my website, please visit http://ec2-54-89-14-86.compute-1.amazonaws.com:3000
 
 ### Flow Chart
 ![flowchart][flowchart]
